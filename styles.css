@@ -25,6 +25,7 @@
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -45,11 +46,12 @@ body::before {
 }
 
 .app {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   padding: 24px 32px 32px;
   gap: 28px;
+  overflow: hidden;
 }
 
 .toolbar {
@@ -265,11 +267,14 @@ body::before {
   justify-content: center;
   align-items: center;
   padding: 24px 0;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .main-panel {
   max-width: 980px;
   width: 100%;
+  max-height: 100%;
   border-radius: var(--radius-large);
   background: linear-gradient(180deg, rgba(245, 250, 255, 0.96), rgba(226, 238, 249, 0.95));
   box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -278,10 +283,12 @@ body::before {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .farm-header {
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .widgets {
@@ -361,6 +368,11 @@ body::before {
 .main-panel-inner {
   text-align: center;
   max-width: 760px;
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-panel-title {
@@ -596,6 +608,9 @@ body::before {
   row-gap: 30px;
   justify-content: center;
   padding: 12px 24px 4px;
+  flex: 1;
+  min-height: 0;
+  align-content: center;
 }
 
 .fields-grid .field-special-left {
@@ -621,8 +636,8 @@ body::before {
   align-items: stretch;
   gap: 6px;
   box-shadow: var(--shadow-soft);
-  width: 210px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 210px;
   aspect-ratio: 7 / 7.3;
   position: relative;
 }
