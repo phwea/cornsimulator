@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div class="app">
     <header class="toolbar">
       <div class="toolbar-left">
@@ -42,11 +43,12 @@
             </div>
           </div>
         </div>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false" type="button">☀️</button>
         <span class="toolbar-time" id="toolbar-time">--:--</span>
         <div class="avatar"></div>
       </div>
     </header>
-    <main class="dashboard">
+    <main class="dashboard" id="main-content">
       <section class="main-panel">
         <div class="main-panel-inner">
           <div class="farm-header">
@@ -327,5 +329,6 @@
       initTransferPage();
     }
   </script>
+  <script src="main.js"></script>
 </body>
 </html>
