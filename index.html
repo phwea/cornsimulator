@@ -463,6 +463,7 @@
     // Achievement system
     var ACHIEVEMENTS_KEY = 'cornboard_achievements_v1';
     var ACHIEVEMENTS_STATS_KEY = 'cornboard_achievement_stats_v1';
+    var LIFETIME_COINS_KEY = 'cornboard_lifetime_coins';
     var achievementToastHideTimer = null;
     var unlockedAchievements = {};
     var achievementStats = {
@@ -571,9 +572,9 @@
         if (!window.localStorage) return;
         localStorage.setItem(CORN_COINS_KEY, String(cornCoins));
         // Update total coins earned for achievements
-        var lifetimeCoins = parseInt(localStorage.getItem('cornboard_lifetime_coins') || '0', 10);
+        var lifetimeCoins = parseInt(localStorage.getItem(LIFETIME_COINS_KEY) || '0', 10);
         if (cornCoins > lifetimeCoins) {
-          localStorage.setItem('cornboard_lifetime_coins', String(cornCoins));
+          localStorage.setItem(LIFETIME_COINS_KEY, String(cornCoins));
           achievementStats.coinsEarned = cornCoins;
           saveAchievementStats();
         }
@@ -1781,7 +1782,7 @@
       } else if (window.location.hash === '#help') {
         setTimeout(showTutorial, 500);
         // Clear the hash
-        history.replaceState(null, null, ' ');
+        history.replaceState(null, null, window.location.pathname);
       }
 
       // Listen for ESC key to close tutorial
