@@ -326,6 +326,7 @@
       </section>
     </main>
     <div class="global-toast" id="ready-toast" aria-live="polite" aria-atomic="true"></div>
+    <div class="achievement-toast" id="achievement-toast" aria-live="polite" aria-atomic="true"></div>
   </div>
   
   <!-- Tutorial/Help Modal -->
@@ -458,6 +459,34 @@
     var totalHarvested = 0;
     var bestHarvest = 0;
     var lastHarvest = 0;
+    
+    // Achievement system
+    var ACHIEVEMENTS_KEY = 'cornboard_achievements_v1';
+    var ACHIEVEMENTS_STATS_KEY = 'cornboard_achievement_stats_v1';
+    var achievementToastHideTimer = null;
+    var unlockedAchievements = {};
+    var achievementStats = {
+      harvestCount: 0,
+      bountifulCount: 0,
+      fieldsUnlocked: 1,
+      processorsUnlocked: 1,
+      totalProcessed: 0,
+      coinsEarned: 0
+    };
+    
+    var ACHIEVEMENTS = {
+      firstHarvest: { id: 'firstHarvest', name: 'First Harvest', desc: 'Harvest your first corn field', icon: '🌾', check: function(s) { return s.harvestCount >= 1; } },
+      farmer: { id: 'farmer', name: 'Farmer', desc: 'Harvest 10 fields', icon: '👨‍🌾', check: function(s) { return s.harvestCount >= 10; } },
+      masterFarmer: { id: 'masterFarmer', name: 'Master Farmer', desc: 'Harvest 50 fields', icon: '🏆', check: function(s) { return s.harvestCount >= 50; } },
+      bountiful: { id: 'bountiful', name: 'Bountiful!', desc: 'Get a bountiful harvest', icon: '✨', check: function(s) { return s.bountifulCount >= 1; } },
+      luckyStreak: { id: 'luckyStreak', name: 'Lucky Streak', desc: 'Get 5 bountiful harvests', icon: '🍀', check: function(s) { return s.bountifulCount >= 5; } },
+      expansion: { id: 'expansion', name: 'Expansion', desc: 'Unlock 3 fields', icon: '📈', check: function(s) { return s.fieldsUnlocked >= 3; } },
+      cornEmpire: { id: 'cornEmpire', name: 'Corn Empire', desc: 'Unlock all 9 fields', icon: '👑', check: function(s) { return s.fieldsUnlocked >= 9; } },
+      industrialist: { id: 'industrialist', name: 'Industrialist', desc: 'Unlock all processors', icon: '🏭', check: function(s) { return s.processorsUnlocked >= 4; } },
+      processor: { id: 'processor', name: 'Processor', desc: 'Process 100 corn', icon: '⚙️', check: function(s) { return s.totalProcessed >= 100; } },
+      coinCollector: { id: 'coinCollector', name: 'Coin Collector', desc: 'Earn 100 coins total', icon: '💰', check: function(s) { return s.coinsEarned >= 100; } },
+      wealthyTrader: { id: 'wealthyTrader', name: 'Wealthy Trader', desc: 'Earn 1000 coins total', icon: '💎', check: function(s) { return s.coinsEarned >= 1000; } }
+    };
     // Player processed-inventory persistence for flour, oil, biofuel, and ingots.
     var PLAYER_INVENTORY_KEY = 'miiboard_player_inventory_v1';
     var playerInventory = { flour: 0, oil: 0, biofuel: 0, ingot: 0 };
@@ -541,6 +570,13 @@
       try {
         if (!window.localStorage) return;
         localStorage.setItem(CORN_COINS_KEY, String(cornCoins));
+        // Update total coins earned for achievements
+        var lifetimeCoins = parseInt(localStorage.getItem('cornboard_lifetime_coins') || '0', 10);
+        if (cornCoins > lifetimeCoins) {
+          localStorage.setItem('cornboard_lifetime_coins', String(cornCoins));
+          achievementStats.coinsEarned = cornCoins;
+          saveAchievementStats();
+        }
       } catch (e) {
         // ignore storage errors
       }
@@ -941,6 +977,15 @@
       state.unlocked = true;
       saveProcessorStates();
       updateProcessingUI();
+      
+      // Track achievement
+      var unlockedCount = 0;
+      Object.keys(PROCESSORS).forEach(function(k) {
+        if (getProcessorState(k).unlocked) unlockedCount++;
+      });
+      achievementStats.processorsUnlocked = unlockedCount;
+      saveAchievementStats();
+      checkAchievements();
     }
 
     // Attach click handlers for each processing building card and draw initial status.
@@ -1016,6 +1061,11 @@
             state.endTime = now + durationMs;
             state.units = clampedUnits;
             saveProcessorStates();
+            
+            // Track achievement
+            achievementStats.totalProcessed += cornCost;
+            saveAchievementStats();
+            checkAchievements();
 
             confirmEl.style.display = 'none';
             confirmEl.innerHTML = '';
@@ -1423,6 +1473,7 @@
       var isBountiful = Math.random() < chance;
       if (isBountiful) {
         amount = amount * BOUNTIFUL_MULTIPLIER;
+        achievementStats.bountifulCount++;
       }
       cornBalance += amount;
       updateCornBalanceDisplay();
@@ -1433,6 +1484,12 @@
         bestHarvest = amount;
       }
       updateCornWalletDisplay();
+      
+      // Track achievement
+      achievementStats.harvestCount++;
+      saveAchievementStats();
+      checkAchievements();
+      
       var status = field.el.querySelector('.field-status');
       var chip = null;
       try {
@@ -1516,6 +1573,11 @@
       updateFieldUnlockFootnote();
       updateFieldUI(field);
       showFieldCostChip(field, '-' + cost + ' coins');
+      
+      // Track achievement
+      achievementStats.fieldsUnlocked = fieldUnlockCount;
+      saveAchievementStats();
+      checkAchievements();
     }
 
     function bindFieldEvents() {
@@ -1547,6 +1609,98 @@
       updateFieldUnlockFootnote();
     }
 
+    // Achievement functions
+    function loadAchievements() {
+      try {
+        if (window.localStorage) {
+          var stored = localStorage.getItem(ACHIEVEMENTS_KEY);
+          if (stored) {
+            unlockedAchievements = JSON.parse(stored);
+          }
+        }
+      } catch (e) {}
+    }
+    
+    function saveAchievements() {
+      try {
+        if (window.localStorage) {
+          localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(unlockedAchievements));
+        }
+      } catch (e) {}
+    }
+    
+    function loadAchievementStats() {
+      try {
+        if (window.localStorage) {
+          var stored = localStorage.getItem(ACHIEVEMENTS_STATS_KEY);
+          if (stored) {
+            var parsed = JSON.parse(stored);
+            Object.keys(achievementStats).forEach(function(key) {
+              if (typeof parsed[key] === 'number') {
+                achievementStats[key] = parsed[key];
+              }
+            });
+          }
+        }
+      } catch (e) {}
+    }
+    
+    function saveAchievementStats() {
+      try {
+        if (window.localStorage) {
+          localStorage.setItem(ACHIEVEMENTS_STATS_KEY, JSON.stringify(achievementStats));
+        }
+      } catch (e) {}
+    }
+    
+    function showAchievementToast(achievement) {
+      var toast = document.getElementById('achievement-toast');
+      if (!toast) return;
+      
+      toast.innerHTML = '<div class="achievement-icon">' + achievement.icon + '</div>' +
+        '<div class="achievement-content">' +
+        '<div class="achievement-title">Achievement Unlocked!</div>' +
+        '<div class="achievement-name">' + achievement.name + '</div>' +
+        '</div>';
+      
+      toast.classList.add('is-visible');
+      
+      if (achievementToastHideTimer !== null) {
+        clearTimeout(achievementToastHideTimer);
+      }
+      
+      achievementToastHideTimer = setTimeout(function() {
+        toast.classList.remove('is-visible');
+      }, 4000);
+    }
+    
+    function checkAchievements() {
+      var newUnlocks = [];
+      
+      Object.keys(ACHIEVEMENTS).forEach(function(key) {
+        var achievement = ACHIEVEMENTS[key];
+        if (!unlockedAchievements[achievement.id] && achievement.check(achievementStats)) {
+          unlockedAchievements[achievement.id] = true;
+          newUnlocks.push(achievement);
+        }
+      });
+      
+      if (newUnlocks.length > 0) {
+        saveAchievements();
+        // Show first new achievement
+        showAchievementToast(newUnlocks[0]);
+        
+        // If multiple achievements, show them sequentially
+        for (var i = 1; i < newUnlocks.length; i++) {
+          (function(achievement, delay) {
+            setTimeout(function() {
+              showAchievementToast(achievement);
+            }, delay);
+          })(newUnlocks[i], i * 4500);
+        }
+      }
+    }
+    
     // Tutorial/Help system
     var TUTORIAL_SEEN_KEY = 'cornboard_tutorial_seen_v1';
 
@@ -1648,6 +1802,8 @@
       loadCornCoins();
       loadFieldUnlockCount();
       loadPlayerInventory();
+      loadAchievements();
+      loadAchievementStats();
       updateCornWalletDisplay();
       bindFieldEvents();
       initProcessorStates();
