@@ -1596,3 +1596,254 @@ body::before {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 }
+
+/* Tutorial/Help Modal Styles */
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.tutorial-overlay.is-visible {
+  display: flex;
+}
+
+.tutorial-modal {
+  background: white;
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-lifted);
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.tutorial-header {
+  padding: 24px 32px;
+  background: linear-gradient(135deg, #4da8da 0%, #6bbfed 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tutorial-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.tutorial-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: white;
+  transition: background 0.2s;
+}
+
+.tutorial-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tutorial-content {
+  padding: 32px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tutorial-section {
+  margin-bottom: 28px;
+}
+
+.tutorial-section:last-child {
+  margin-bottom: 0;
+}
+
+.tutorial-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tutorial-section-icon {
+  font-size: 1.3rem;
+}
+
+.tutorial-section-text {
+  color: var(--text-soft);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.tutorial-tip {
+  background: #fff8e1;
+  border-left: 3px solid #ffc107;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: #856404;
+}
+
+.tutorial-footer {
+  padding: 20px 32px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.tutorial-btn {
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.tutorial-btn-primary {
+  background: linear-gradient(135deg, #4da8da 0%, #6bbfed 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(77, 168, 218, 0.3);
+}
+
+.tutorial-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(77, 168, 218, 0.4);
+}
+
+.tutorial-btn-secondary {
+  background: white;
+  color: var(--text-main);
+  border: 1px solid #dee2e6;
+}
+
+.tutorial-btn-secondary:hover {
+  background: #f8f9fa;
+}
+
+.help-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4da8da 0%, #6bbfed 100%);
+  border: none;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(77, 168, 218, 0.4);
+  transition: all 0.3s;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(77, 168, 218, 0.5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Achievement Toast Styles */
+.achievement-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120px);
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #2d3e50;
+  padding: 16px 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 1rem;
+  z-index: 1001;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+}
+
+.achievement-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.achievement-icon {
+  font-size: 1.5rem;
+  animation: bounce 0.6s ease-in-out;
+}
+
+.achievement-content {
+  flex: 1;
+}
+
+.achievement-title {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 2px;
+}
+
+.achievement-name {
+  font-size: 1.05rem;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+}

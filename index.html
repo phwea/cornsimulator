@@ -326,7 +326,115 @@
       </section>
     </main>
     <div class="global-toast" id="ready-toast" aria-live="polite" aria-atomic="true"></div>
+    <div class="achievement-toast" id="achievement-toast" aria-live="polite" aria-atomic="true"></div>
   </div>
+  
+  <!-- Tutorial/Help Modal -->
+  <div class="tutorial-overlay" id="tutorial-overlay">
+    <div class="tutorial-modal">
+      <div class="tutorial-header">
+        <h2 class="tutorial-title">🌽 Welcome to CornBoard!</h2>
+        <button class="tutorial-close" id="tutorial-close" aria-label="Close tutorial">×</button>
+      </div>
+      <div class="tutorial-content">
+        <div class="tutorial-section">
+          <h3 class="tutorial-section-title">
+            <span class="tutorial-section-icon">🌾</span>
+            Getting Started
+          </h3>
+          <p class="tutorial-section-text">
+            Welcome to your corn farm! Your goal is to grow and harvest corn, process it into valuable products, 
+            and sell them on the market to earn coins. Use coins to unlock more fields and processing buildings.
+          </p>
+        </div>
+
+        <div class="tutorial-section">
+          <h3 class="tutorial-section-title">
+            <span class="tutorial-section-icon">🌽</span>
+            Farming Basics
+          </h3>
+          <p class="tutorial-section-text">
+            <strong>Step 1:</strong> Click an empty field to plant corn seeds.<br>
+            <strong>Step 2:</strong> Wait 10 seconds for your corn to grow (watch the progress bar).<br>
+            <strong>Step 3:</strong> Click the ready field to harvest and collect 12 corn (or 24 with a bountiful harvest!).<br>
+            <strong>Step 4:</strong> Repeat to build up your corn inventory.
+          </p>
+          <div class="tutorial-tip">
+            💡 <strong>Tip:</strong> You have a 25% chance of getting a "bountiful harvest" that doubles your corn yield!
+          </div>
+        </div>
+
+        <div class="tutorial-section">
+          <h3 class="tutorial-section-title">
+            <span class="tutorial-section-icon">⚙️</span>
+            Processing Buildings
+          </h3>
+          <p class="tutorial-section-text">
+            Convert your corn into refined products using processing buildings:
+            <br><strong>• Mill:</strong> 4 corn → 1 Flour (unlocked from start)
+            <br><strong>• Press:</strong> 10 corn → 1 Oil (costs 75 coins to unlock)
+            <br><strong>• Refinery:</strong> 25 corn → 1 Biofuel (costs 150 coins)
+            <br><strong>• Forge:</strong> 50 corn → 1 Ingot (costs 300 coins)
+          </p>
+          <div class="tutorial-tip">
+            💡 <strong>Tip:</strong> Processed goods sell for much higher prices than raw corn!
+          </div>
+        </div>
+
+        <div class="tutorial-section">
+          <h3 class="tutorial-section-title">
+            <span class="tutorial-section-icon">💰</span>
+            Earning Coins
+          </h3>
+          <p class="tutorial-section-text">
+            <strong>Sell on the Market:</strong> Go to the Market tab to sell your corn and processed goods. 
+            Prices fluctuate based on time of day - morning prices trend higher, while night prices are more volatile.
+            Sales convert to coins at the current market price (rounded).
+          </p>
+          <p class="tutorial-section-text">
+            <strong>Strategy:</strong> Watch the market prices and sell when they're high to maximize your coin earnings!
+          </p>
+        </div>
+
+        <div class="tutorial-section">
+          <h3 class="tutorial-section-title">
+            <span class="tutorial-section-icon">🎰</span>
+            Corn Roller (Mini-Game)
+          </h3>
+          <p class="tutorial-section-text">
+            Visit the Roller tab to spin a slot machine for 1 coin per spin. Match symbols to win corn:
+            <br>• 🌽🌽🌽 = Jackpot +400 corn
+            <br>• 🍒🍒🍒 = +140 corn
+            <br>• 🍋🍋🍋 = +100 corn
+          </p>
+          <div class="tutorial-tip">
+            💡 <strong>Tip:</strong> The roller is a fun way to gamble for quick corn, but selling products is more reliable!
+          </div>
+        </div>
+
+        <div class="tutorial-section">
+          <h3 class="tutorial-section-title">
+            <span class="tutorial-section-icon">🔓</span>
+            Unlocking Content
+          </h3>
+          <p class="tutorial-section-text">
+            <strong>Fields:</strong> You start with 1 field unlocked. Unlock more fields (up to 9 total) by spending coins. 
+            Field 2 costs 150 coins, Field 3 costs 300 coins, and so on. You must unlock fields in order.
+          </p>
+          <p class="tutorial-section-text">
+            <strong>Processors:</strong> Unlock processing buildings by spending coins to access better conversion rates.
+          </p>
+        </div>
+      </div>
+      <div class="tutorial-footer">
+        <button class="tutorial-btn tutorial-btn-secondary" id="tutorial-later">Maybe Later</button>
+        <button class="tutorial-btn tutorial-btn-primary" id="tutorial-start">Let's Start Farming!</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Help Button -->
+  <button class="help-button" id="help-button" aria-label="Show help">?</button>
   <script src="js/market.js"></script>
   <script src="js/layout.js"></script>
   <script>
@@ -351,6 +459,35 @@
     var totalHarvested = 0;
     var bestHarvest = 0;
     var lastHarvest = 0;
+    
+    // Achievement system
+    var ACHIEVEMENTS_KEY = 'cornboard_achievements_v1';
+    var ACHIEVEMENTS_STATS_KEY = 'cornboard_achievement_stats_v1';
+    var LIFETIME_COINS_KEY = 'cornboard_lifetime_coins';
+    var achievementToastHideTimer = null;
+    var unlockedAchievements = {};
+    var achievementStats = {
+      harvestCount: 0,
+      bountifulCount: 0,
+      fieldsUnlocked: 1,
+      processorsUnlocked: 1,
+      totalProcessed: 0,
+      coinsEarned: 0
+    };
+    
+    var ACHIEVEMENTS = {
+      firstHarvest: { id: 'firstHarvest', name: 'First Harvest', desc: 'Harvest your first corn field', icon: '🌾', check: function(s) { return s.harvestCount >= 1; } },
+      farmer: { id: 'farmer', name: 'Farmer', desc: 'Harvest 10 fields', icon: '👨‍🌾', check: function(s) { return s.harvestCount >= 10; } },
+      masterFarmer: { id: 'masterFarmer', name: 'Master Farmer', desc: 'Harvest 50 fields', icon: '🏆', check: function(s) { return s.harvestCount >= 50; } },
+      bountiful: { id: 'bountiful', name: 'Bountiful!', desc: 'Get a bountiful harvest', icon: '✨', check: function(s) { return s.bountifulCount >= 1; } },
+      luckyStreak: { id: 'luckyStreak', name: 'Lucky Streak', desc: 'Get 5 bountiful harvests', icon: '🍀', check: function(s) { return s.bountifulCount >= 5; } },
+      expansion: { id: 'expansion', name: 'Expansion', desc: 'Unlock 3 fields', icon: '📈', check: function(s) { return s.fieldsUnlocked >= 3; } },
+      cornEmpire: { id: 'cornEmpire', name: 'Corn Empire', desc: 'Unlock all 9 fields', icon: '👑', check: function(s) { return s.fieldsUnlocked >= 9; } },
+      industrialist: { id: 'industrialist', name: 'Industrialist', desc: 'Unlock all processors', icon: '🏭', check: function(s) { return s.processorsUnlocked >= 4; } },
+      processor: { id: 'processor', name: 'Processor', desc: 'Process 100 corn', icon: '⚙️', check: function(s) { return s.totalProcessed >= 100; } },
+      coinCollector: { id: 'coinCollector', name: 'Coin Collector', desc: 'Earn 100 coins total', icon: '💰', check: function(s) { return s.coinsEarned >= 100; } },
+      wealthyTrader: { id: 'wealthyTrader', name: 'Wealthy Trader', desc: 'Earn 1000 coins total', icon: '💎', check: function(s) { return s.coinsEarned >= 1000; } }
+    };
     // Player processed-inventory persistence for flour, oil, biofuel, and ingots.
     var PLAYER_INVENTORY_KEY = 'miiboard_player_inventory_v1';
     var playerInventory = { flour: 0, oil: 0, biofuel: 0, ingot: 0 };
@@ -434,6 +571,13 @@
       try {
         if (!window.localStorage) return;
         localStorage.setItem(CORN_COINS_KEY, String(cornCoins));
+        // Update total coins earned for achievements
+        var lifetimeCoins = parseInt(localStorage.getItem(LIFETIME_COINS_KEY) || '0', 10);
+        if (cornCoins > lifetimeCoins) {
+          localStorage.setItem(LIFETIME_COINS_KEY, String(cornCoins));
+          achievementStats.coinsEarned = cornCoins;
+          saveAchievementStats();
+        }
       } catch (e) {
         // ignore storage errors
       }
@@ -834,6 +978,15 @@
       state.unlocked = true;
       saveProcessorStates();
       updateProcessingUI();
+      
+      // Track achievement
+      var unlockedCount = 0;
+      Object.keys(PROCESSORS).forEach(function(k) {
+        if (getProcessorState(k).unlocked) unlockedCount++;
+      });
+      achievementStats.processorsUnlocked = unlockedCount;
+      saveAchievementStats();
+      checkAchievements();
     }
 
     // Attach click handlers for each processing building card and draw initial status.
@@ -909,6 +1062,11 @@
             state.endTime = now + durationMs;
             state.units = clampedUnits;
             saveProcessorStates();
+            
+            // Track achievement
+            achievementStats.totalProcessed += cornCost;
+            saveAchievementStats();
+            checkAchievements();
 
             confirmEl.style.display = 'none';
             confirmEl.innerHTML = '';
@@ -1316,6 +1474,7 @@
       var isBountiful = Math.random() < chance;
       if (isBountiful) {
         amount = amount * BOUNTIFUL_MULTIPLIER;
+        achievementStats.bountifulCount++;
       }
       cornBalance += amount;
       updateCornBalanceDisplay();
@@ -1326,6 +1485,12 @@
         bestHarvest = amount;
       }
       updateCornWalletDisplay();
+      
+      // Track achievement
+      achievementStats.harvestCount++;
+      saveAchievementStats();
+      checkAchievements();
+      
       var status = field.el.querySelector('.field-status');
       var chip = null;
       try {
@@ -1409,6 +1574,11 @@
       updateFieldUnlockFootnote();
       updateFieldUI(field);
       showFieldCostChip(field, '-' + cost + ' coins');
+      
+      // Track achievement
+      achievementStats.fieldsUnlocked = fieldUnlockCount;
+      saveAchievementStats();
+      checkAchievements();
     }
 
     function bindFieldEvents() {
@@ -1440,6 +1610,189 @@
       updateFieldUnlockFootnote();
     }
 
+    // Achievement functions
+    function loadAchievements() {
+      try {
+        if (window.localStorage) {
+          var stored = localStorage.getItem(ACHIEVEMENTS_KEY);
+          if (stored) {
+            unlockedAchievements = JSON.parse(stored);
+          }
+        }
+      } catch (e) {}
+    }
+    
+    function saveAchievements() {
+      try {
+        if (window.localStorage) {
+          localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(unlockedAchievements));
+        }
+      } catch (e) {}
+    }
+    
+    function loadAchievementStats() {
+      try {
+        if (window.localStorage) {
+          var stored = localStorage.getItem(ACHIEVEMENTS_STATS_KEY);
+          if (stored) {
+            var parsed = JSON.parse(stored);
+            Object.keys(achievementStats).forEach(function(key) {
+              if (typeof parsed[key] === 'number') {
+                achievementStats[key] = parsed[key];
+              }
+            });
+          }
+        }
+      } catch (e) {}
+    }
+    
+    function saveAchievementStats() {
+      try {
+        if (window.localStorage) {
+          localStorage.setItem(ACHIEVEMENTS_STATS_KEY, JSON.stringify(achievementStats));
+        }
+      } catch (e) {}
+    }
+    
+    function showAchievementToast(achievement) {
+      var toast = document.getElementById('achievement-toast');
+      if (!toast) return;
+      
+      toast.innerHTML = '<div class="achievement-icon">' + achievement.icon + '</div>' +
+        '<div class="achievement-content">' +
+        '<div class="achievement-title">Achievement Unlocked!</div>' +
+        '<div class="achievement-name">' + achievement.name + '</div>' +
+        '</div>';
+      
+      toast.classList.add('is-visible');
+      
+      if (achievementToastHideTimer !== null) {
+        clearTimeout(achievementToastHideTimer);
+      }
+      
+      achievementToastHideTimer = setTimeout(function() {
+        toast.classList.remove('is-visible');
+      }, 4000);
+    }
+    
+    function checkAchievements() {
+      var newUnlocks = [];
+      
+      Object.keys(ACHIEVEMENTS).forEach(function(key) {
+        var achievement = ACHIEVEMENTS[key];
+        if (!unlockedAchievements[achievement.id] && achievement.check(achievementStats)) {
+          unlockedAchievements[achievement.id] = true;
+          newUnlocks.push(achievement);
+        }
+      });
+      
+      if (newUnlocks.length > 0) {
+        saveAchievements();
+        // Show first new achievement
+        showAchievementToast(newUnlocks[0]);
+        
+        // If multiple achievements, show them sequentially
+        for (var i = 1; i < newUnlocks.length; i++) {
+          (function(achievement, delay) {
+            setTimeout(function() {
+              showAchievementToast(achievement);
+            }, delay);
+          })(newUnlocks[i], i * 4500);
+        }
+      }
+    }
+    
+    // Tutorial/Help system
+    var TUTORIAL_SEEN_KEY = 'cornboard_tutorial_seen_v1';
+
+    function showTutorial() {
+      var overlay = document.getElementById('tutorial-overlay');
+      if (overlay) {
+        overlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function hideTutorial() {
+      var overlay = document.getElementById('tutorial-overlay');
+      if (overlay) {
+        overlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function markTutorialSeen() {
+      try {
+        if (window.localStorage) {
+          localStorage.setItem(TUTORIAL_SEEN_KEY, 'true');
+        }
+      } catch (e) {}
+    }
+
+    function hasSeenTutorial() {
+      try {
+        if (window.localStorage) {
+          return localStorage.getItem(TUTORIAL_SEEN_KEY) === 'true';
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    function bindTutorial() {
+      var helpButton = document.getElementById('help-button');
+      var tutorialClose = document.getElementById('tutorial-close');
+      var tutorialLater = document.getElementById('tutorial-later');
+      var tutorialStart = document.getElementById('tutorial-start');
+      var overlay = document.getElementById('tutorial-overlay');
+
+      if (helpButton) {
+        helpButton.addEventListener('click', showTutorial);
+      }
+
+      if (tutorialClose) {
+        tutorialClose.addEventListener('click', hideTutorial);
+      }
+
+      if (tutorialLater) {
+        tutorialLater.addEventListener('click', function() {
+          markTutorialSeen();
+          hideTutorial();
+        });
+      }
+
+      if (tutorialStart) {
+        tutorialStart.addEventListener('click', function() {
+          markTutorialSeen();
+          hideTutorial();
+        });
+      }
+
+      // Close on overlay click
+      if (overlay) {
+        overlay.addEventListener('click', function(e) {
+          if (e.target === overlay) {
+            hideTutorial();
+          }
+        });
+      }
+
+      // Show tutorial for first-time users or when #help hash is present
+      if (!hasSeenTutorial()) {
+        setTimeout(showTutorial, 1000);
+      } else if (window.location.hash === '#help') {
+        setTimeout(showTutorial, 500);
+        // Clear the hash
+        history.replaceState(null, null, window.location.pathname);
+      }
+
+      // Listen for ESC key to close tutorial
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          hideTutorial();
+        }
+      });
+    }
+
     function initDashboard() {
       updateTime();
       setInterval(updateTime, 60000);
@@ -1450,12 +1803,15 @@
       loadCornCoins();
       loadFieldUnlockCount();
       loadPlayerInventory();
+      loadAchievements();
+      loadAchievementStats();
       updateCornWalletDisplay();
       bindFieldEvents();
       initProcessorStates();
       startFieldTickLoop();
       bindProcessingBuildings();
       bindCornWallet();
+      bindTutorial();
       if (typeof ensureMarketInitialized === 'function') {
         ensureMarketInitialized();
       }
