@@ -366,6 +366,19 @@
     };
     // Per-processor custom batch size for the adjustable amount button (not persisted).
     var processorCustomUnits = {};
+    
+    // DOM element cache to reduce repeated querySelector calls
+    var domCache = {
+      processorCards: {},
+      processorElements: {}
+    };
+    
+    // Debounced save functions to reduce localStorage writes
+    var saveTimers = {
+      cornBalance: null,
+      fieldStates: null,
+      processorStates: null
+    };
 
     function updateTime() {
       var el = document.getElementById('toolbar-time');
@@ -405,7 +418,7 @@
       }
     }
 
-    function saveCornBalance() {
+    function saveCornBalanceImmediate() {
       try {
         if (!window.localStorage) return;
         localStorage.setItem(CORN_STORAGE_KEY, String(cornBalance));
@@ -413,6 +426,14 @@
       } catch (e) {
         // ignore storage errors
       }
+    }
+    
+    function saveCornBalance() {
+      // Debounce saves to reduce localStorage writes
+      if (saveTimers.cornBalance !== null) {
+        clearTimeout(saveTimers.cornBalance);
+      }
+      saveTimers.cornBalance = setTimeout(saveCornBalanceImmediate, 100);
     }
 
     function loadCornCoins() {
@@ -483,7 +504,7 @@
       return processorStates[key];
     }
 
-    function saveProcessorStates() {
+    function saveProcessorStatesImmediate() {
       try {
         if (!window.localStorage) return;
         var compact = {};
@@ -502,6 +523,14 @@
       } catch (e) {
         // ignore storage errors
       }
+    }
+    
+    function saveProcessorStates() {
+      // Debounce saves to reduce localStorage writes
+      if (saveTimers.processorStates !== null) {
+        clearTimeout(saveTimers.processorStates);
+      }
+      saveTimers.processorStates = setTimeout(saveProcessorStatesImmediate, 100);
     }
 
     function loadProcessorStates() {
@@ -555,20 +584,46 @@
       return Math.min(Math.floor(value), PROCESSOR_MAX_UNITS_PER_JOB);
     }
 
+    // Cache DOM elements for a processor card
+    function cacheProcessorElements(key) {
+      if (domCache.processorElements[key]) {
+        return domCache.processorElements[key];
+      }
+      
+      var card = document.querySelector('.processing-card[data-processor-key="' + key + '"]');
+      if (!card) return null;
+      
+      var cached = {
+        card: card,
+        statusEl: document.getElementById('processor-' + key + '-status'),
+        inventoryEl: document.getElementById('processor-' + key + '-inventory'),
+        amountBtns: card.querySelectorAll('.processing-amount-btn'),
+        collectBtn: card.querySelector('.processing-collect-btn'),
+        unlockBtn: card.querySelector('.processing-unlock-btn'),
+        confirmEl: card.querySelector('.processing-confirm'),
+        progressBar: card.querySelector('.processing-progress-bar')
+      };
+      
+      domCache.processorElements[key] = cached;
+      return cached;
+    }
+    
     // Refresh each processing card's status, unlock state, controls, inventory, and progress.
     function updateProcessingUI() {
       var now = Date.now();
       Object.keys(PROCESSORS).forEach(function (key) {
         var proc = PROCESSORS[key];
-        var card = document.querySelector('.processing-card[data-processor-key="' + key + '"]');
-        if (!card) return;
-        var statusEl = document.getElementById('processor-' + key + '-status');
-        var inventoryEl = document.getElementById('processor-' + key + '-inventory');
-        var amountBtns = card.querySelectorAll('.processing-amount-btn');
-        var collectBtn = card.querySelector('.processing-collect-btn');
-        var unlockBtn = card.querySelector('.processing-unlock-btn');
-        var confirmEl = card.querySelector('.processing-confirm');
-        var progressBar = card.querySelector('.processing-progress-bar');
+        var elements = cacheProcessorElements(key);
+        if (!elements) return;
+        
+        var card = elements.card;
+        var statusEl = elements.statusEl;
+        var inventoryEl = elements.inventoryEl;
+        var amountBtns = elements.amountBtns;
+        var collectBtn = elements.collectBtn;
+        var unlockBtn = elements.unlockBtn;
+        var confirmEl = elements.confirmEl;
+        var progressBar = elements.progressBar;
         var state = getProcessorState(key);
         var amount = playerInventory[proc.outputKey] || 0;
 
@@ -929,6 +984,21 @@
     }
 
     function updateProcessingFromTime() {
+      // Early exit if no processors are processing
+      var hasProcessing = false;
+      var keys = Object.keys(PROCESSORS);
+      for (var i = 0; i < keys.length; i++) {
+        var state = getProcessorState(keys[i]);
+        if (state.state === 'processing') {
+          hasProcessing = true;
+          break;
+        }
+      }
+      if (!hasProcessing) {
+        updateProcessingUI();
+        return;
+      }
+      
       var now = Date.now();
       var changed = false;
       Object.keys(PROCESSORS).forEach(function (key) {
@@ -1102,7 +1172,7 @@
       };
     }
 
-    function saveFieldStates() {
+    function saveFieldStatesImmediate() {
       try {
         if (!window.localStorage) return;
         var compact = fieldStates.map(function (field) {
@@ -1116,6 +1186,14 @@
       } catch (e) {
         // ignore storage errors
       }
+    }
+    
+    function saveFieldStates() {
+      // Debounce saves to reduce localStorage writes
+      if (saveTimers.fieldStates !== null) {
+        clearTimeout(saveTimers.fieldStates);
+      }
+      saveTimers.fieldStates = setTimeout(saveFieldStatesImmediate, 100);
     }
 
     function loadStoredFieldStates() {
@@ -1193,13 +1271,17 @@
         bar.style.width = field.progress + '%';
       }
       if (status) {
+        var statusText;
         if (field.state === 'empty') {
-          status.textContent = 'Empty';
+          statusText = 'Empty';
         } else if (field.state === 'growing') {
-          status.textContent = formatFieldCountdown(field);
+          statusText = formatFieldCountdown(field);
         } else if (field.state === 'ready') {
-          status.textContent = 'Tap to harvest!';
+          statusText = 'Tap to harvest!';
+        } else {
+          statusText = 'Empty';
         }
+        status.textContent = statusText;
       }
       field.el.classList.remove('field-empty', 'field-growing', 'field-ready', 'field-locked');
       if (!isFieldUnlocked(field.index)) {
@@ -1264,6 +1346,19 @@
     }
 
     function updateGrowingFieldsFromTime() {
+      // Early exit if no fields are growing
+      var hasGrowing = false;
+      for (var i = 0; i < fieldStates.length; i++) {
+        if (fieldStates[i].state === 'growing') {
+          hasGrowing = true;
+          break;
+        }
+      }
+      if (!hasGrowing) {
+        updateReadyToastFromFields();
+        return;
+      }
+      
       var now = Date.now();
       var changed = false;
       fieldStates.forEach(function (field) {
@@ -1287,7 +1382,16 @@
         saveFieldStates();
       }
       updateReadyToastFromFields();
-      updateProcessingFromTime();
+    }
+    
+    var processorTickIntervalId = null;
+    
+    function startProcessorTickLoop() {
+      if (processorTickIntervalId !== null) {
+        clearInterval(processorTickIntervalId);
+      }
+      // Update processors less frequently (every 1 second instead of every 500ms)
+      processorTickIntervalId = setInterval(updateProcessingFromTime, 1000);
     }
 
     function startFieldTickLoop() {
@@ -1454,6 +1558,7 @@
       bindFieldEvents();
       initProcessorStates();
       startFieldTickLoop();
+      startProcessorTickLoop();
       bindProcessingBuildings();
       bindCornWallet();
       if (typeof ensureMarketInitialized === 'function') {
@@ -1463,8 +1568,19 @@
 
     // Ensure latest field state is persisted when leaving the page
     window.addEventListener('beforeunload', function () {
-      saveFieldStates();
-      saveProcessorStates();
+      // Clear any pending debounced saves and save immediately
+      if (saveTimers.fieldStates !== null) {
+        clearTimeout(saveTimers.fieldStates);
+      }
+      if (saveTimers.processorStates !== null) {
+        clearTimeout(saveTimers.processorStates);
+      }
+      if (saveTimers.cornBalance !== null) {
+        clearTimeout(saveTimers.cornBalance);
+      }
+      saveFieldStatesImmediate();
+      saveProcessorStatesImmediate();
+      saveCornBalanceImmediate();
     });
 
     if (document.readyState === 'loading') {
