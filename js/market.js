@@ -41,9 +41,11 @@
       var parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== 'object') return false;
 
-      ['corn', 'flour', 'oil', 'biofuel', 'ingot'].forEach(function (key) {
+      var commodities = ['corn', 'flour', 'oil', 'biofuel', 'ingot'];
+      for (var i = 0; i < commodities.length; i++) {
+        var key = commodities[i];
         var src = parsed[key];
-        if (!src || typeof src.price !== 'number') return;
+        if (!src || typeof src.price !== 'number') continue;
         var target = market[key] || { price: 0, history: [] };
         target.price = src.price;
         if (Array.isArray(src.history)) {
@@ -54,7 +56,7 @@
           target.history = [];
         }
         market[key] = target;
-      });
+      }
       return true;
     } catch (e) {
       return false;
@@ -65,9 +67,11 @@
     try {
       if (!window.localStorage) return;
       var compact = {};
-      ['corn', 'flour', 'oil', 'biofuel', 'ingot'].forEach(function (key) {
+      var commodities = ['corn', 'flour', 'oil', 'biofuel', 'ingot'];
+      for (var i = 0; i < commodities.length; i++) {
+        var key = commodities[i];
         var src = market[key];
-        if (!src) return;
+        if (!src) continue;
         compact[key] = {
           price: typeof src.price === 'number' && isFinite(src.price) ? src.price : 0,
           history: Array.isArray(src.history)
@@ -76,7 +80,7 @@
               })
             : []
         };
-      });
+      }
       window.localStorage.setItem(MARKET_STORAGE_KEY, JSON.stringify(compact));
     } catch (e) {
     }
@@ -92,18 +96,20 @@
   }
 
   function ensureHistoryArrays() {
-    ['corn', 'flour', 'oil', 'biofuel', 'ingot'].forEach(function (key) {
+    var commodities = ['corn', 'flour', 'oil', 'biofuel', 'ingot'];
+    for (var i = 0; i < commodities.length; i++) {
+      var key = commodities[i];
       var entry = market[key];
       if (!entry) {
         market[key] = { price: 0, history: [] };
-        return;
+        continue;
       }
       if (!Array.isArray(entry.history)) {
         entry.history = [];
       } else if (entry.history.length > MARKET_HISTORY_LENGTH) {
         entry.history = entry.history.slice(-MARKET_HISTORY_LENGTH);
       }
-    });
+    }
   }
 
   function updateCornPriceOnce() {
