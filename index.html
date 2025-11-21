@@ -1261,8 +1261,10 @@
           statusText = 'Empty';
         } else if (field.state === 'growing') {
           statusText = formatFieldCountdown(field);
-        } else {
+        } else if (field.state === 'ready') {
           statusText = 'Tap to harvest!';
+        } else {
+          statusText = 'Empty';
         }
         status.textContent = statusText;
       }
