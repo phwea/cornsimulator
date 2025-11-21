@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MiiBoard – Stats</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <div class="logo-orb"></div>
+        <span class="logo-text">MiiBoard</span>
+      </div>
+      <div class="toolbar-center">
+        <a href="index.html" class="toolbar-btn">Home</a>
+        <a href="stats.html" class="toolbar-btn toolbar-btn-active">Roller</a>
+        <a href="market.html" class="toolbar-btn">Market</a>
+      </div>
+      <div class="toolbar-right">
+        <div class="corn-wallet-wrapper">
+          <div class="corn-balance" id="corn-balance" aria-expanded="false">
+            🌽 <span class="corn-balance-value">0</span>
+          </div>
+          <div class="corn-wallet" id="corn-wallet" aria-hidden="true">
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Current corn</span>
+              <span class="corn-wallet-value corn-wallet-current">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Corn coins</span>
+              <span class="corn-wallet-value corn-wallet-coins">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Total harvested</span>
+              <span class="corn-wallet-value corn-wallet-total">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Best harvest</span>
+              <span class="corn-wallet-value corn-wallet-best">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Last harvest</span>
+              <span class="corn-wallet-value corn-wallet-last">&mdash;</span>
+            </div>
+          </div>
+        </div>
+        <span class="toolbar-time" id="toolbar-time">--:--</span>
+        <div class="avatar"></div>
+      </div>
+    </header>
+    <main class="dashboard">
+      <section class="main-panel">
+        <div class="main-panel-inner">
+          <div class="farm-header">
+            <h1 class="main-panel-title">Corn Roller</h1>
+            <p class="main-panel-subtitle">Spend corn coins to chase a juicy corn jackpot.</p>
+          </div>
+          <div class="roller-card">
+            <div class="roller-cost">Cost: 🪙1 per spin · Coins: 🪙 <span id="roller-coins">0</span></div>
+            <div class="roller-reels" id="roller-reels">
+              <div class="roller-slot" data-index="0">🌽</div>
+              <div class="roller-slot" data-index="1">🍒</div>
+              <div class="roller-slot" data-index="2">🍋</div>
+            </div>
+            <button class="roller-spin-btn" id="roller-spin-btn" type="button">Spin</button>
+            <div class="roller-result" id="roller-result">Ready to spin.</div>
+            <div class="roller-payout-table">
+              <div class="roller-payout-row">
+                <span class="roller-payout-symbols">🌽 🌽 🌽</span>
+                <span class="roller-payout-value">Jackpot +400</span>
+              </div>
+              <div class="roller-payout-row">
+                <span class="roller-payout-symbols">🍒 🍒 🍒</span>
+                <span class="roller-payout-value">+140</span>
+              </div>
+              <div class="roller-payout-row">
+                <span class="roller-payout-symbols">🍋 🍋 🍋</span>
+                <span class="roller-payout-value">+100</span>
+              </div>
+              <div class="roller-payout-row">
+                <span class="roller-payout-symbols">Any two match</span>
+                <span class="roller-payout-value">+40</span>
+              </div>
+              <div class="roller-payout-row">
+                <span class="roller-payout-symbols">Any 🌽</span>
+                <span class="roller-payout-value">+20</span>
+              </div>
+            </div>
+            <div class="roller-stats">
+              <div class="roller-stats-row">
+                <span class="roller-stats-label">Spins this session</span>
+                <span class="roller-stats-value" id="roller-spins">0</span>
+              </div>
+              <div class="roller-stats-row">
+                <span class="roller-stats-label">Coins spent</span>
+                <span class="roller-stats-value" id="roller-coins-spent">0</span>
+              </div>
+              <div class="roller-stats-row">
+                <span class="roller-stats-label">Corn won</span>
+                <span class="roller-stats-value" id="roller-corn-won">0</span>
+              </div>
+              <div class="roller-stats-row">
+                <span class="roller-stats-label">Best win</span>
+                <span class="roller-stats-value" id="roller-best-win">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="global-toast" id="ready-toast" aria-live="polite" aria-atomic="true"></div>
+  </div>
+  <script src="js/layout.js"></script>
+  <script>
+    var cornBalance = 0;
+    var cornCoins = 0;
+    var CORN_STORAGE_KEY = 'miiboard_corn_balance';
+    var CORN_LAST_SEEN_KEY = 'miiboard_last_seen';
+    var CORN_COINS_KEY = 'miiboard_corn_coins';
+    var FIELD_STORAGE_KEY = 'miiboard_field_states';
+    var FIELD_GROWTH_MS = 10000;
+    var ROLLER_SPIN_COST_COINS = 1;
+    var ROLLER_SYMBOLS = [
+      { icon: '🌽', type: 'corn', weight: 1 },
+      { icon: '🍒', type: 'cherry', weight: 2 },
+      { icon: '🍋', type: 'lemon', weight: 2 },
+      { icon: '🍇', type: 'grape', weight: 2 },
+      { icon: '⭐', type: 'star', weight: 1 }
+    ];
+    var rollerIsSpinning = false;
+    var rollerSpinIntervalId = null;
+    var rollerSlots = [];
+    var rollerResultEl = null;
+    var rollerCardEl = null;
+    var rollerSpins = 0;
+    var rollerCoinsSpent = 0;
+    var rollerCornWon = 0;
+    var rollerBestWin = 0;
+    var totalHarvested = 0;
+    var bestHarvest = 0;
+    var lastHarvest = 0;
+    var readyToastHideTimerId = null;
+    var lastReadyToastCount = 0;
+
+    function updateTime() {
+      var el = document.getElementById('toolbar-time');
+      if (!el) return;
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes().toString().padStart(2, '0');
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      if (hours === 0) hours = 12;
+      el.textContent = hours + ':' + minutes + ' ' + ampm;
+    }
+
+    function loadCornCoins() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_COINS_KEY);
+        if (stored !== null) {
+          var parsed = parseInt(stored, 10);
+          if (!isNaN(parsed) && parsed >= 0) {
+            cornCoins = parsed;
+          }
+        }
+      } catch (e) {
+      }
+    }
+
+    function saveCornCoins() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(CORN_COINS_KEY, String(cornCoins));
+      } catch (e) {
+      }
+    }
+
+    function updateRollerCoinsDisplay() {
+      var el = document.getElementById('roller-coins');
+      if (!el) return;
+      el.textContent = cornCoins;
+    }
+
+    function updateCornBalanceDisplay() {
+      var container = document.getElementById('corn-balance');
+      if (!container) return;
+      var valueEl = container.querySelector('.corn-balance-value');
+      if (valueEl) {
+        valueEl.textContent = cornBalance;
+      } else {
+        container.textContent = '\ud83c\udf3d ' + cornBalance;
+      }
+    }
+
+    function loadCornBalance() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_STORAGE_KEY);
+        if (stored !== null) {
+          var parsed = parseInt(stored, 10);
+          if (!isNaN(parsed) && parsed >= 0) {
+            cornBalance = parsed;
+          }
+        }
+      } catch (e) {
+      }
+    }
+
+    function loadStoredFieldStates() {
+      try {
+        if (!window.localStorage) return null;
+        var raw = localStorage.getItem(FIELD_STORAGE_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return null;
+        return parsed;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function computeReadyCountFromStoredFields() {
+      var stored = loadStoredFieldStates();
+      if (!stored) return 0;
+      var now = Date.now();
+      var ready = 0;
+      stored.forEach(function (data, index) {
+        if (!data) return;
+        var state = data.state || 'empty';
+        var progress = typeof data.progress === 'number' ? data.progress : 0;
+        var growMs = index >= 8 ? FIELD_GROWTH_MS * 4 : FIELD_GROWTH_MS;
+        var startTime = typeof data.startTime === 'number' ? data.startTime : null;
+
+        if (state === 'ready') {
+          ready++;
+          return;
+        }
+        if (state === 'growing') {
+          if (typeof startTime !== 'number') {
+            if (progress > 0 && progress < 100) {
+              startTime = now - (progress / 100) * growMs;
+            } else {
+              startTime = now;
+            }
+          }
+          var elapsed = now - startTime;
+          if (elapsed >= growMs) {
+            ready++;
+          }
+        }
+      });
+      return ready;
+    }
+
+    function showReadyToast(count) {
+      var toast = document.getElementById('ready-toast');
+      if (!toast) return;
+      var label = count === 1 ? '1 field is ready to harvest' : count + ' fields are ready to harvest';
+      toast.textContent = '🌽 ' + label;
+      toast.classList.add('is-visible');
+      if (readyToastHideTimerId !== null) {
+        clearTimeout(readyToastHideTimerId);
+      }
+      readyToastHideTimerId = setTimeout(function () {
+        toast.classList.remove('is-visible');
+      }, 3500);
+    }
+
+    function checkAndShowReadyToast() {
+      var count = computeReadyCountFromStoredFields();
+      if (count > 0 && count !== lastReadyToastCount) {
+        lastReadyToastCount = count;
+        showReadyToast(count);
+      }
+    }
+
+    function saveCornBalance() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(CORN_STORAGE_KEY, String(cornBalance));
+        localStorage.setItem(CORN_LAST_SEEN_KEY, String(Date.now()));
+      } catch (e) {
+      }
+    }
+
+    function updateCornWalletDisplay() {
+      var wallet = document.getElementById('corn-wallet');
+      if (!wallet) return;
+      var currentEl = wallet.querySelector('.corn-wallet-current');
+      var totalEl = wallet.querySelector('.corn-wallet-total');
+      var bestEl = wallet.querySelector('.corn-wallet-best');
+      var lastEl = wallet.querySelector('.corn-wallet-last');
+      var coinsEl = wallet.querySelector('.corn-wallet-coins');
+      if (currentEl) currentEl.textContent = cornBalance;
+      if (totalEl) totalEl.textContent = totalHarvested;
+      if (bestEl) bestEl.textContent = bestHarvest;
+      if (lastEl) lastEl.textContent = lastHarvest > 0 ? lastHarvest : '&mdash;';
+      if (coinsEl) coinsEl.textContent = cornCoins;
+    }
+
+    function updateRollerStatsDisplay() {
+      var spinsEl = document.getElementById('roller-spins');
+      var coinsSpentEl = document.getElementById('roller-coins-spent');
+      var cornWonEl = document.getElementById('roller-corn-won');
+      var bestWinEl = document.getElementById('roller-best-win');
+      if (spinsEl) spinsEl.textContent = rollerSpins;
+      if (coinsSpentEl) coinsSpentEl.textContent = rollerCoinsSpent;
+      if (cornWonEl) cornWonEl.textContent = rollerCornWon;
+      if (bestWinEl) bestWinEl.textContent = rollerBestWin;
+    }
+
+    function rollerPickSymbol() {
+      var totalWeight = 0;
+      ROLLER_SYMBOLS.forEach(function (s) {
+        totalWeight += s.weight;
+      });
+      var r = Math.random() * totalWeight;
+      for (var i = 0; i < ROLLER_SYMBOLS.length; i++) {
+        r -= ROLLER_SYMBOLS[i].weight;
+        if (r <= 0) return ROLLER_SYMBOLS[i];
+      }
+      return ROLLER_SYMBOLS[ROLLER_SYMBOLS.length - 1];
+    }
+
+    function rollerEvaluateCombination(symbols) {
+      var a = symbols[0];
+      var b = symbols[1];
+      var c = symbols[2];
+      var payout = 0;
+      var label = 'No win.';
+      var isJackpot = false;
+      var hasCorn = symbols.some(function (s) {
+        return s.type === 'corn';
+      });
+
+      if (a.type === b.type && b.type === c.type) {
+        if (a.type === 'corn') {
+          payout = 400;
+          label = 'JACKPOT! +400 corn';
+          isJackpot = true;
+        } else if (a.type === 'cherry') {
+          payout = 140;
+          label = 'Big win! +140 corn';
+        } else if (a.type === 'lemon') {
+          payout = 100;
+          label = '+100 corn';
+        } else if (a.type === 'grape') {
+          payout = 80;
+          label = '+80 corn';
+        } else if (a.type === 'star') {
+          payout = 160;
+          label = '+160 corn';
+        }
+      } else if (a.type === b.type || b.type === c.type || a.type === c.type) {
+        payout = 40;
+        label = 'Nice! +40 corn';
+      } else if (hasCorn) {
+        payout = 20;
+        label = '+20 corn';
+      }
+
+      return {
+        payout: payout,
+        label: label,
+        isJackpot: isJackpot
+      };
+    }
+
+    function rollerSetSlots(symbols) {
+      if (!rollerSlots || !rollerSlots.length) return;
+      for (var i = 0; i < rollerSlots.length; i++) {
+        var el = rollerSlots[i];
+        var sym = symbols[i];
+        el.textContent = sym ? sym.icon : '❔';
+      }
+    }
+
+    function rollerSetSpinning(spinning) {
+      rollerIsSpinning = spinning;
+      var btn = document.getElementById('roller-spin-btn');
+      if (btn) {
+        btn.disabled = spinning;
+        if (spinning) {
+          btn.classList.add('roller-spin-btn-spinning');
+        } else {
+          btn.classList.remove('roller-spin-btn-spinning');
+        }
+      }
+      if (rollerSlots && rollerSlots.length) {
+        rollerSlots.forEach(function (slot) {
+          if (spinning) {
+            slot.classList.add('roller-slot-spinning');
+          } else {
+            slot.classList.remove('roller-slot-spinning');
+          }
+        });
+      }
+    }
+
+    function performRollerSpin() {
+      if (rollerIsSpinning) return;
+      if (cornCoins < ROLLER_SPIN_COST_COINS) {
+        if (rollerResultEl) {
+          rollerResultEl.classList.remove('roller-result-win', 'roller-result-jackpot', 'roller-result-loss');
+          rollerResultEl.classList.add('roller-result-loss');
+          rollerResultEl.textContent = 'Not enough coins. Sell corn on the Market page.';
+        }
+        return;
+      }
+
+      if (rollerCardEl) {
+        rollerCardEl.classList.remove('roller-card-jackpot');
+      }
+      rollerSetSpinning(true);
+      rollerSpins += 1;
+      rollerCoinsSpent += ROLLER_SPIN_COST_COINS;
+      updateRollerStatsDisplay();
+      cornCoins -= ROLLER_SPIN_COST_COINS;
+      saveCornCoins();
+      updateRollerCoinsDisplay();
+
+      var animationDuration = 900;
+      var tickInterval = 80;
+      var start = Date.now();
+
+      if (rollerSpinIntervalId !== null) {
+        clearInterval(rollerSpinIntervalId);
+      }
+
+      rollerSpinIntervalId = setInterval(function () {
+        var elapsed = Date.now() - start;
+        var tempSymbols = [
+          rollerPickSymbol(),
+          rollerPickSymbol(),
+          rollerPickSymbol()
+        ];
+        rollerSetSlots(tempSymbols);
+        if (elapsed >= animationDuration) {
+          clearInterval(rollerSpinIntervalId);
+          rollerSpinIntervalId = null;
+
+          var finalSymbols = [
+            rollerPickSymbol(),
+            rollerPickSymbol(),
+            rollerPickSymbol()
+          ];
+          rollerSetSlots(finalSymbols);
+          var result = rollerEvaluateCombination(finalSymbols);
+          if (result.payout > 0) {
+            cornBalance += result.payout;
+            rollerCornWon += result.payout;
+            if (result.payout > rollerBestWin) {
+              rollerBestWin = result.payout;
+            }
+            updateCornBalanceDisplay();
+            saveCornBalance();
+            updateCornWalletDisplay();
+            updateRollerStatsDisplay();
+          }
+          if (rollerResultEl) {
+            rollerResultEl.classList.remove('roller-result-win', 'roller-result-jackpot', 'roller-result-loss');
+            rollerResultEl.textContent = result.label;
+            if (result.payout > 0) {
+              if (result.isJackpot) {
+                rollerResultEl.classList.add('roller-result-jackpot');
+              } else {
+                rollerResultEl.classList.add('roller-result-win');
+              }
+            } else {
+              rollerResultEl.classList.add('roller-result-loss');
+            }
+          }
+          if (rollerCardEl) {
+            rollerCardEl.classList.remove('roller-card-jackpot');
+            if (result.isJackpot) {
+              rollerCardEl.classList.add('roller-card-jackpot');
+            }
+          }
+          rollerSetSpinning(false);
+        }
+      }, tickInterval);
+    }
+
+    function bindRoller() {
+      var btn = document.getElementById('roller-spin-btn');
+      rollerResultEl = document.getElementById('roller-result');
+      rollerCardEl = document.querySelector('.roller-card');
+      rollerSlots = Array.prototype.slice.call(document.querySelectorAll('.roller-slot'));
+      if (!btn || !rollerSlots.length) return;
+
+      btn.addEventListener('click', function () {
+        performRollerSpin();
+      });
+
+      btn.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          performRollerSpin();
+        }
+      });
+    }
+
+    function applyOfflineBonus() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_LAST_SEEN_KEY);
+        if (!stored) {
+          localStorage.setItem(CORN_LAST_SEEN_KEY, String(Date.now()));
+          return;
+        }
+        var previous = parseInt(stored, 10);
+        if (isNaN(previous)) {
+          localStorage.setItem(CORN_LAST_SEEN_KEY, String(Date.now()));
+          return;
+        }
+        var now = Date.now();
+        var diffMinutes = Math.floor((now - previous) / 60000);
+        var bonus = Math.min(Math.floor(diffMinutes / 5), 20);
+        if (bonus > 0) {
+          cornBalance += bonus;
+          totalHarvested += bonus;
+          lastHarvest = bonus;
+          updateCornBalanceDisplay();
+          updateCornWalletDisplay();
+          saveCornBalance();
+          return;
+        }
+        localStorage.setItem(CORN_LAST_SEEN_KEY, String(now));
+      } catch (e) {
+      }
+    }
+
+    function bindCornWallet() {
+      var balance = document.getElementById('corn-balance');
+      var wallet = document.getElementById('corn-wallet');
+      if (!balance || !wallet) return;
+      var isOpen = false;
+
+      function setOpen(open) {
+        isOpen = open;
+        if (open) {
+          wallet.classList.add('is-open');
+          balance.setAttribute('aria-expanded', 'true');
+          wallet.setAttribute('aria-hidden', 'false');
+        } else {
+          wallet.classList.remove('is-open');
+          balance.setAttribute('aria-expanded', 'false');
+          wallet.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      balance.setAttribute('role', 'button');
+      balance.setAttribute('tabindex', '0');
+
+      balance.addEventListener('click', function (event) {
+        event.stopPropagation();
+        setOpen(!isOpen);
+      });
+
+      balance.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setOpen(!isOpen);
+        }
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!isOpen) return;
+        if (!wallet.contains(event.target) && !balance.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+    }
+
+    function initStatsPage() {
+      updateTime();
+      setInterval(updateTime, 60000);
+      loadCornBalance();
+      totalHarvested = cornBalance;
+      applyOfflineBonus();
+      updateCornBalanceDisplay();
+      updateCornWalletDisplay();
+      loadCornCoins();
+      updateRollerCoinsDisplay();
+      bindCornWallet();
+      bindRoller();
+      updateRollerStatsDisplay();
+      checkAndShowReadyToast();
+      setInterval(checkAndShowReadyToast, 1000);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initStatsPage);
+    } else {
+      initStatsPage();
+    }
+  </script>
+</body>
+</html>

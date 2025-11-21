@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MiiBoard  Market</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <div class="logo-orb"></div>
+        <span class="logo-text">MiiBoard</span>
+      </div>
+      <div class="toolbar-center">
+        <a href="index.html" class="toolbar-btn">Home</a>
+        <a href="stats.html" class="toolbar-btn">Roller</a>
+        <a href="market.html" class="toolbar-btn toolbar-btn-active">Market</a>
+      </div>
+      <div class="toolbar-right">
+        <div class="corn-wallet-wrapper">
+          <div class="corn-balance" id="corn-balance" aria-expanded="false">
+            🌽 <span class="corn-balance-value">0</span>
+          </div>
+          <div class="corn-wallet" id="corn-wallet" aria-hidden="true">
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Current corn</span>
+              <span class="corn-wallet-value corn-wallet-current">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Corn coins</span>
+              <span class="corn-wallet-value corn-wallet-coins">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Total harvested</span>
+              <span class="corn-wallet-value corn-wallet-total">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Best harvest</span>
+              <span class="corn-wallet-value corn-wallet-best">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Last harvest</span>
+              <span class="corn-wallet-value corn-wallet-last">&mdash;</span>
+            </div>
+          </div>
+        </div>
+        <span class="toolbar-time" id="toolbar-time">--:--</span>
+        <div class="avatar"></div>
+      </div>
+    </header>
+    <main class="dashboard">
+      <section class="main-panel">
+        <div class="main-panel-inner">
+          <div class="farm-header">
+            <h1 class="main-panel-title">Commodity Market</h1>
+            <p class="main-panel-subtitle">Track live prices for corn and refined products, then sell at the right moment.</p>
+          </div>
+          <div class="market-layout">
+            <div class="market-card market-primary">
+              <div class="market-commodity-tabs" role="tablist">
+                <button class="market-commodity-tab is-active" type="button" data-commodity-key="corn">Corn</button>
+                <button class="market-commodity-tab" type="button" data-commodity-key="flour">Flour</button>
+                <button class="market-commodity-tab" type="button" data-commodity-key="oil">Oil</button>
+                <button class="market-commodity-tab" type="button" data-commodity-key="biofuel">Biofuel</button>
+                <button class="market-commodity-tab" type="button" data-commodity-key="ingot">Ingot</button>
+              </div>
+              <div class="market-price-main">
+                <div class="market-price-current">
+                  <span id="market-selected-label">Corn</span>
+                  <span id="market-current-price">$0.00</span>
+                </div>
+                <div class="market-price-change" id="market-change">0.0%</div>
+              </div>
+              <div class="market-price-subline" id="market-subline">Last 60 minutes</div>
+              <canvas class="market-chart-canvas" id="market-chart" width="520" height="240"></canvas>
+              <div class="market-inspect" id="market-inspect">Hover over the chart to see past prices.</div>
+              <div class="market-holdings-panel" id="market-holdings-panel" aria-label="Holdings overview">
+                <div class="market-holding-row" data-commodity-key="corn">
+                  <div class="market-holding-label">Corn</div>
+                  <div class="market-holding-meta">
+                    <span class="market-holding-qty" data-role="qty">0</span>
+                    <span class="market-holding-value" data-role="value">$0.00</span>
+                    <span class="market-holding-change" data-role="change">0.0%</span>
+                  </div>
+                </div>
+                <div class="market-holding-row" data-commodity-key="flour">
+                  <div class="market-holding-label">Flour</div>
+                  <div class="market-holding-meta">
+                    <span class="market-holding-qty" data-role="qty">0</span>
+                    <span class="market-holding-value" data-role="value">$0.00</span>
+                    <span class="market-holding-change" data-role="change">0.0%</span>
+                  </div>
+                </div>
+                <div class="market-holding-row" data-commodity-key="oil">
+                  <div class="market-holding-label">Oil</div>
+                  <div class="market-holding-meta">
+                    <span class="market-holding-qty" data-role="qty">0</span>
+                    <span class="market-holding-value" data-role="value">$0.00</span>
+                    <span class="market-holding-change" data-role="change">0.0%</span>
+                  </div>
+                </div>
+                <div class="market-holding-row" data-commodity-key="biofuel">
+                  <div class="market-holding-label">Biofuel</div>
+                  <div class="market-holding-meta">
+                    <span class="market-holding-qty" data-role="qty">0</span>
+                    <span class="market-holding-value" data-role="value">$0.00</span>
+                    <span class="market-holding-change" data-role="change">0.0%</span>
+                  </div>
+                </div>
+                <div class="market-holding-row" data-commodity-key="ingot">
+                  <div class="market-holding-label">Ingot</div>
+                  <div class="market-holding-meta">
+                    <span class="market-holding-qty" data-role="qty">0</span>
+                    <span class="market-holding-value" data-role="value">$0.00</span>
+                    <span class="market-holding-change" data-role="change">0.0%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="market-trade" aria-label="Quick sell for selected commodity">
+                <div class="market-trade-row">
+                  <div class="market-trade-label">
+                    Holdings: <span id="market-trade-selected-label">Corn</span>
+                  </div>
+                  <div class="market-trade-amount">
+                    <span id="market-trade-amount">0</span>
+                    <span class="market-trade-price">@ <span id="market-trade-price">$0.00</span></span>
+                  </div>
+                </div>
+                <div class="market-trade-actions">
+                  <button type="button" class="market-trade-btn market-trade-btn-primary" data-sell-qty="1">Sell 1</button>
+                  <button type="button" class="market-trade-btn" data-sell-qty="10">Sell 10</button>
+                  <button type="button" class="market-trade-btn" data-sell-qty="all">Sell all</button>
+                </div>
+                <div class="market-trade-note" id="market-trade-note">Sales pay out in coins using the live market price.</div>
+              </div>
+            </div>
+          </div>
+          <p class="market-footer-note">Prices update once per minute from a shared market engine. Hover the chart to inspect earlier prices.</p>
+        </div>
+      </section>
+    </main>
+    <div class="global-toast" id="ready-toast" aria-live="polite" aria-atomic="true"></div>
+  </div>
+  <script src="js/market.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    var cornBalance = 0;
+    var cornCoins = 0;
+    var CORN_STORAGE_KEY = 'miiboard_corn_balance';
+    var CORN_LAST_SEEN_KEY = 'miiboard_last_seen';
+    var CORN_COINS_KEY = 'miiboard_corn_coins';
+    var FIELD_STORAGE_KEY = 'miiboard_field_states';
+    var FIELD_GROWTH_MS = 10000;
+
+    // Player processed-inventory shared with the Home/Transfer pages (flour, oil, biofuel, ingots).
+    var PLAYER_INVENTORY_KEY = 'miiboard_player_inventory_v1';
+    var playerInventory = { flour: 0, oil: 0, biofuel: 0, ingot: 0 };
+
+    var totalHarvested = 0;
+    var bestHarvest = 0;
+    var lastHarvest = 0;
+    var readyToastHideTimerId = null;
+    var lastReadyToastCount = 0;
+    var selectedCommodityKey = 'corn';
+    var marketHoverIndex = null;
+
+    // Local view of the shared market configuration for user-friendly labels.
+    var MARKET_COMMODITIES = {
+      corn: { key: 'corn', label: 'Corn' },
+      flour: { key: 'flour', label: 'Flour' },
+      oil: { key: 'oil', label: 'Oil' },
+      biofuel: { key: 'biofuel', label: 'Biofuel' },
+      ingot: { key: 'ingot', label: 'Ingot' }
+    };
+
+    function updateTime() {
+      var el = document.getElementById('toolbar-time');
+      if (!el) return;
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes().toString().padStart(2, '0');
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      if (hours === 0) hours = 12;
+      el.textContent = hours + ':' + minutes + ' ' + ampm;
+    }
+
+    // --- Ready-toast helpers reused from the Home page ---
+
+    function updateCornBalanceDisplay() {
+      var container = document.getElementById('corn-balance');
+      if (!container) return;
+      var valueEl = container.querySelector('.corn-balance-value');
+      if (valueEl) {
+        valueEl.textContent = cornBalance;
+      } else {
+        container.textContent = '🌽 ' + cornBalance;
+      }
+    }
+
+    function loadCornBalance() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_STORAGE_KEY);
+        if (stored !== null) {
+          var parsed = parseInt(stored, 10);
+          if (!isNaN(parsed) && parsed >= 0) {
+            cornBalance = parsed;
+          }
+        }
+      } catch (e) {
+      }
+    }
+
+    function saveCornBalance() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(CORN_STORAGE_KEY, String(cornBalance));
+        localStorage.setItem(CORN_LAST_SEEN_KEY, String(Date.now()));
+      } catch (e) {
+      }
+    }
+
+    function loadCornCoins() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_COINS_KEY);
+        if (stored !== null) {
+          var parsed = parseInt(stored, 10);
+          if (!isNaN(parsed) && parsed >= 0) {
+            cornCoins = parsed;
+          }
+        }
+      } catch (e) {
+      }
+    }
+
+    function saveCornCoins() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(CORN_COINS_KEY, String(cornCoins));
+      } catch (e) {
+      }
+    }
+
+    // Load and save the player's processed commodity inventory (flour, oil, biofuel, ingots).
+    function loadPlayerInventory() {
+      try {
+        if (!window.localStorage) return;
+        var raw = localStorage.getItem(PLAYER_INVENTORY_KEY);
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        ['flour', 'oil', 'biofuel', 'ingot'].forEach(function (key) {
+          var value = parsed[key];
+          if (typeof value === 'number' && value >= 0) {
+            playerInventory[key] = Math.floor(value);
+          }
+        });
+      } catch (e) {
+      }
+    }
+
+    function savePlayerInventory() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(PLAYER_INVENTORY_KEY, JSON.stringify(playerInventory));
+      } catch (e) {
+      }
+    }
+
+    function updateCornWalletDisplay() {
+      var wallet = document.getElementById('corn-wallet');
+      if (!wallet) return;
+      var currentEl = wallet.querySelector('.corn-wallet-current');
+      var totalEl = wallet.querySelector('.corn-wallet-total');
+      var bestEl = wallet.querySelector('.corn-wallet-best');
+      var lastEl = wallet.querySelector('.corn-wallet-last');
+      var coinsEl = wallet.querySelector('.corn-wallet-coins');
+      if (currentEl) currentEl.textContent = cornBalance;
+      if (totalEl) totalEl.textContent = totalHarvested;
+      if (bestEl) bestEl.textContent = bestHarvest;
+      if (lastEl) lastEl.textContent = lastHarvest > 0 ? lastHarvest : '\u2014';
+      if (coinsEl) coinsEl.textContent = cornCoins;
+    }
+
+    function loadStoredFieldStates() {
+      try {
+        if (!window.localStorage) return null;
+        var raw = localStorage.getItem(FIELD_STORAGE_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return null;
+        return parsed;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function computeReadyCountFromStoredFields() {
+      var stored = loadStoredFieldStates();
+      if (!stored) return 0;
+      var now = Date.now();
+      var ready = 0;
+      stored.forEach(function (data, index) {
+        if (!data) return;
+        var state = data.state || 'empty';
+        var progress = typeof data.progress === 'number' ? data.progress : 0;
+        var growMs = index >= 8 ? FIELD_GROWTH_MS * 4 : FIELD_GROWTH_MS;
+        var startTime = typeof data.startTime === 'number' ? data.startTime : null;
+
+        if (state === 'ready') {
+          ready++;
+          return;
+        }
+        if (state === 'growing') {
+          if (typeof startTime !== 'number') {
+            if (progress > 0 && progress < 100) {
+              startTime = now - (progress / 100) * growMs;
+            } else {
+              startTime = now;
+            }
+          }
+          var elapsed = now - startTime;
+          if (elapsed >= growMs) {
+            ready++;
+          }
+        }
+      });
+      return ready;
+    }
+
+    function showReadyToast(count) {
+      var toast = document.getElementById('ready-toast');
+      if (!toast) return;
+      var label = count === 1 ? '1 field is ready to harvest' : count + ' fields are ready to harvest';
+      toast.textContent = '🌽 ' + label;
+      toast.classList.add('is-visible');
+      if (readyToastHideTimerId !== null) {
+        clearTimeout(readyToastHideTimerId);
+      }
+      readyToastHideTimerId = setTimeout(function () {
+        toast.classList.remove('is-visible');
+      }, 3500);
+    }
+
+    function checkAndShowReadyToast() {
+      var count = computeReadyCountFromStoredFields();
+      if (count > 0 && count !== lastReadyToastCount) {
+        lastReadyToastCount = count;
+        showReadyToast(count);
+      }
+    }
+
+    function bindCornWallet() {
+      var balance = document.getElementById('corn-balance');
+      var wallet = document.getElementById('corn-wallet');
+      if (!balance || !wallet) return;
+      var isOpen = false;
+
+      function setOpen(open) {
+        isOpen = open;
+        if (open) {
+          wallet.classList.add('is-open');
+          balance.setAttribute('aria-expanded', 'true');
+          wallet.setAttribute('aria-hidden', 'false');
+        } else {
+          wallet.classList.remove('is-open');
+          balance.setAttribute('aria-expanded', 'false');
+          wallet.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      balance.setAttribute('role', 'button');
+      balance.setAttribute('tabindex', '0');
+
+      balance.addEventListener('click', function (event) {
+        event.stopPropagation();
+        setOpen(!isOpen);
+      });
+
+      balance.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setOpen(!isOpen);
+        }
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!isOpen) return;
+        if (!wallet.contains(event.target) && !balance.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+    }
+
+    // --- Market helpers: read from the shared multi-commodity market engine ---
+
+    function getCommodityEntry(key) {
+      if (!window.market || !window.market[key]) {
+        return { price: 0, history: [] };
+      }
+      var entry = window.market[key];
+      var price = typeof entry.price === 'number' && isFinite(entry.price) ? entry.price : 0;
+      var history = Array.isArray(entry.history)
+        ? entry.history.filter(function (n) { return typeof n === 'number' && isFinite(n); })
+        : [];
+      return { price: price, history: history };
+    }
+
+    function getHoldingForCommodity(key) {
+      if (key === 'corn') {
+        return cornBalance || 0;
+      }
+      if (!playerInventory) return 0;
+      if (!playerInventory.hasOwnProperty(key)) return 0;
+      var value = playerInventory[key];
+      return typeof value === 'number' && value > 0 ? value : 0;
+    }
+
+    function updateTradeUI() {
+      var labelCfg = MARKET_COMMODITIES[selectedCommodityKey] || { label: selectedCommodityKey };
+      var entry = getCommodityEntry(selectedCommodityKey);
+      var amount = getHoldingForCommodity(selectedCommodityKey);
+
+      var labelEl = document.getElementById('market-trade-selected-label');
+      var amountEl = document.getElementById('market-trade-amount');
+      var priceEl = document.getElementById('market-trade-price');
+
+      if (labelEl) labelEl.textContent = labelCfg.label;
+      if (amountEl) amountEl.textContent = amount;
+      if (priceEl) priceEl.textContent = formatPrice(entry.price);
+    }
+
+    function updateInspectUI(entry) {
+      var inspectEl = document.getElementById('market-inspect');
+      if (!inspectEl) return;
+      var history = entry.history || [];
+      if (!history.length || typeof marketHoverIndex !== 'number' || marketHoverIndex < 0 || marketHoverIndex >= history.length) {
+        inspectEl.textContent = 'Hover over the chart to see past prices.';
+        return;
+      }
+
+      var price = history[marketHoverIndex];
+      if (typeof price !== 'number' || !isFinite(price)) {
+        inspectEl.textContent = 'Hover over the chart to see past prices.';
+        return;
+      }
+
+      var len = history.length;
+      var stepsFromEnd = len - 1 - marketHoverIndex;
+      var whenText;
+      if (stepsFromEnd <= 0) {
+        whenText = 'Just now';
+      } else if (stepsFromEnd === 1) {
+        whenText = '1 min ago';
+      } else {
+        whenText = stepsFromEnd + ' min ago';
+      }
+
+      var labelCfg = MARKET_COMMODITIES[selectedCommodityKey] || { label: selectedCommodityKey };
+      inspectEl.textContent = labelCfg.label + ' ' + formatPrice(price) + ' · ' + whenText;
+    }
+
+    // Update the multi-commodity holdings list under the chart.
+    function updateHoldingsOverview() {
+      var panel = document.getElementById('market-holdings-panel');
+      if (!panel) return;
+
+      Object.keys(MARKET_COMMODITIES).forEach(function (key) {
+        var row = panel.querySelector('.market-holding-row[data-commodity-key="' + key + '"]');
+        if (!row) return;
+
+        var qtyEl = row.querySelector('[data-role="qty"]');
+        var valueEl = row.querySelector('[data-role="value"]');
+        var changeEl = row.querySelector('[data-role="change"]');
+
+        var holding = getHoldingForCommodity(key);
+        var entry = getCommodityEntry(key);
+        var value = holding * entry.price;
+
+        if (qtyEl) qtyEl.textContent = holding;
+        if (valueEl) valueEl.textContent = formatPrice(value);
+
+        if (changeEl) {
+          var history = entry.history;
+          var pctText = '0.0%';
+          var changeClass = '';
+          changeEl.classList.remove('market-change-positive', 'market-change-negative');
+          if (history && history.length >= 2) {
+            var first = history[0];
+            var last = history[history.length - 1];
+            if (isFinite(first) && first > 0 && isFinite(last)) {
+              var pct = ((last - first) / first) * 100;
+              var sign = pct > 0 ? '+' : '';
+              pctText = sign + pct.toFixed(1) + '%';
+              if (pct > 0.01) changeClass = 'market-change-positive';
+              else if (pct < -0.01) changeClass = 'market-change-negative';
+            }
+          }
+          if (changeClass) changeEl.classList.add(changeClass);
+          changeEl.textContent = pctText;
+        }
+      });
+    }
+
+    function formatPrice(value) {
+      var v = typeof value === 'number' && isFinite(value) ? value : 0;
+      return '$' + v.toFixed(2);
+    }
+
+    function updateCommodityTabs() {
+      var tabs = document.querySelectorAll('.market-commodity-tab');
+      tabs.forEach(function (tab) {
+        var key = tab.getAttribute('data-commodity-key');
+        if (key === selectedCommodityKey) {
+          tab.classList.add('is-active');
+        } else {
+          tab.classList.remove('is-active');
+        }
+      });
+    }
+
+    // Simple canvas-based line chart that plots the history for the selected commodity.
+    // The Market engine (js/market.js) updates once per minute and calls window.onMarketUpdated,
+    // which we hook to re-render this chart and header.
+    function drawCommodityChart(entry) {
+      var canvas = document.getElementById('market-chart');
+      if (!canvas || !canvas.getContext) return;
+      var ctx = canvas.getContext('2d');
+      var width = canvas.width;
+      var height = canvas.height;
+      ctx.clearRect(0, 0, width, height);
+
+      var history = entry.history;
+      if (!history || !history.length) return;
+
+      var min = history[0];
+      var max = history[0];
+      history.forEach(function (v) {
+        if (v < min) min = v;
+        if (v > max) max = v;
+      });
+      if (!isFinite(min) || !isFinite(max)) return;
+      if (min === max) {
+        min -= 0.01;
+        max += 0.01;
+      }
+
+      var paddingLeft = 18;
+      var paddingRight = 8;
+      var paddingTop = 12;
+      var paddingBottom = 24;
+      var plotWidth = width - paddingLeft - paddingRight;
+      var plotHeight = height - paddingTop - paddingBottom;
+
+      // Grid line
+      ctx.save();
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.3)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(paddingLeft, paddingTop + plotHeight / 2);
+      ctx.lineTo(width - paddingRight, paddingTop + plotHeight / 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Line path
+      ctx.save();
+      ctx.strokeStyle = 'rgba(234, 179, 8, 0.95)';
+      ctx.lineWidth = 2;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      var hoverIndex = typeof marketHoverIndex === 'number' ? marketHoverIndex : null;
+      var hoverX = null;
+      var hoverY = null;
+      history.forEach(function (v, index) {
+        var t = history.length === 1 ? 0 : index / (history.length - 1);
+        var x = paddingLeft + t * plotWidth;
+        var yRatio = (v - min) / (max - min);
+        var y = paddingTop + (1 - yRatio) * plotHeight;
+        if (index === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+
+        if (hoverIndex !== null && index === hoverIndex) {
+          hoverX = x;
+          hoverY = y;
+        }
+      });
+      ctx.stroke();
+      ctx.restore();
+
+      // Hover highlight point
+      if (hoverX !== null && hoverY !== null) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(234, 179, 8, 1)';
+        ctx.strokeStyle = 'rgba(250, 204, 21, 0.7)';
+        ctx.lineWidth = 1;
+
+        // Vertical guide line
+        ctx.beginPath();
+        ctx.moveTo(hoverX, paddingTop);
+        ctx.lineTo(hoverX, paddingTop + plotHeight);
+        ctx.stroke();
+
+        // Point marker
+        ctx.beginPath();
+        ctx.arc(hoverX, hoverY, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Render the header, percent change, and line chart for the currently selected commodity.
+    function renderSelectedCommodity() {
+      var entry = getCommodityEntry(selectedCommodityKey);
+      var labelCfg = MARKET_COMMODITIES[selectedCommodityKey] || { label: selectedCommodityKey };
+      var labelEl = document.getElementById('market-selected-label');
+      var priceEl = document.getElementById('market-current-price');
+      var changeEl = document.getElementById('market-change');
+      var sublineEl = document.getElementById('market-subline');
+
+      if (labelEl) labelEl.textContent = labelCfg.label;
+      if (priceEl) priceEl.textContent = formatPrice(entry.price);
+
+      var history = entry.history;
+      var pctText = '0.0%';
+      var changeClass = '';
+      if (history && history.length >= 2) {
+        var first = history[0];
+        var last = history[history.length - 1];
+        if (isFinite(first) && first > 0 && isFinite(last)) {
+          var pct = ((last - first) / first) * 100;
+          var sign = pct > 0 ? '+' : '';
+          pctText = sign + pct.toFixed(1) + '%';
+          if (pct > 0.01) changeClass = 'market-change-positive';
+          else if (pct < -0.01) changeClass = 'market-change-negative';
+        }
+      }
+      if (changeEl) {
+        changeEl.textContent = pctText;
+        changeEl.classList.remove('market-change-positive', 'market-change-negative');
+        if (changeClass) changeEl.classList.add(changeClass);
+      }
+      if (sublineEl) {
+        var len = history ? history.length : 0;
+        sublineEl.textContent = len > 0 ? 'Last ' + len + ' minutes' : 'Waiting for price data…';
+      }
+
+      drawCommodityChart(entry);
+      updateCommodityTabs();
+      updateTradeUI();
+      updateInspectUI(entry);
+      updateHoldingsOverview();
+    }
+
+    function bindCommodityTabs() {
+      var tabs = document.querySelectorAll('.market-commodity-tab');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var key = tab.getAttribute('data-commodity-key');
+          if (!key || !MARKET_COMMODITIES[key]) return;
+          selectedCommodityKey = key;
+          renderSelectedCommodity();
+        });
+      });
+      updateCommodityTabs();
+    }
+
+    function bindChartHover() {
+      var canvas = document.getElementById('market-chart');
+      if (!canvas || !canvas.getContext) return;
+
+      canvas.addEventListener('mousemove', function (event) {
+        var rect = canvas.getBoundingClientRect();
+        var width = canvas.width;
+        var height = canvas.height;
+        if (!width || !height) return;
+
+        var relX = event.clientX - rect.left;
+        var relY = event.clientY - rect.top;
+        var cx = (relX / rect.width) * width;
+        var cy = (relY / rect.height) * height;
+
+        var entry = getCommodityEntry(selectedCommodityKey);
+        var history = entry.history;
+        if (!history || !history.length) return;
+
+        var paddingLeft = 18;
+        var paddingRight = 8;
+        var paddingTop = 12;
+        var paddingBottom = 24;
+        var plotWidth = width - paddingLeft - paddingRight;
+        var plotHeight = height - paddingTop - paddingBottom;
+        if (plotWidth <= 0 || plotHeight <= 0) return;
+
+        // Limit interaction to the plot area but allow a bit of space above/below the line.
+        if (cx < paddingLeft) cx = paddingLeft;
+        if (cx > width - paddingRight) cx = width - paddingRight;
+
+        var t = (cx - paddingLeft) / plotWidth;
+        if (t < 0) t = 0;
+        if (t > 1) t = 1;
+
+        var index = Math.round(t * (history.length - 1));
+        if (index < 0) index = 0;
+        if (index >= history.length) index = history.length - 1;
+
+        marketHoverIndex = index;
+        renderSelectedCommodity();
+      });
+
+      canvas.addEventListener('mouseleave', function () {
+        marketHoverIndex = null;
+        renderSelectedCommodity();
+      });
+    }
+
+    function bindHoldingsRows() {
+      var panel = document.getElementById('market-holdings-panel');
+      if (!panel) return;
+
+      var rows = panel.querySelectorAll('.market-holding-row');
+      rows.forEach(function (row) {
+        row.addEventListener('click', function () {
+          var key = row.getAttribute('data-commodity-key');
+          if (!key || !MARKET_COMMODITIES[key]) return;
+          selectedCommodityKey = key;
+          renderSelectedCommodity();
+        });
+      });
+    }
+
+    // Sell the currently selected commodity using the quick-trade controls under the chart.
+    function sellSelectedCommodity(requestedUnits) {
+      var resultEl = document.getElementById('market-trade-note');
+      var key = selectedCommodityKey;
+      var labelCfg = MARKET_COMMODITIES[key] || { label: key };
+      var available = getHoldingForCommodity(key);
+
+      if (!available || available <= 0) {
+        if (resultEl) resultEl.textContent = 'No ' + labelCfg.label + ' to sell.';
+        return;
+      }
+
+      var units;
+      if (requestedUnits === 'all') {
+        units = available;
+      } else {
+        units = parseInt(requestedUnits, 10);
+        if (!units || units <= 0) {
+          if (resultEl) resultEl.textContent = 'Nothing to sell.';
+          return;
+        }
+        units = Math.min(units, available);
+      }
+
+      var entry = getCommodityEntry(key);
+      var price = entry.price || 0;
+      if (!price || price <= 0) {
+        if (resultEl) resultEl.textContent = 'Price data not ready yet.';
+        return;
+      }
+
+      var value = price * units;
+      var coinsGained = Math.round(value);
+
+      if (key === 'corn') {
+        cornBalance -= units;
+        if (cornBalance < 0) cornBalance = 0;
+        saveCornBalance();
+        updateCornBalanceDisplay();
+      } else {
+        playerInventory[key] = (playerInventory[key] || 0) - units;
+        if (playerInventory[key] < 0) playerInventory[key] = 0;
+        savePlayerInventory();
+      }
+
+      cornCoins += coinsGained;
+      saveCornCoins();
+      updateCornWalletDisplay();
+      updateTradeUI();
+      updateHoldingsOverview();
+
+      if (resultEl) {
+        resultEl.textContent = 'Sold ' + units + ' ' + labelCfg.label + ' for ' + coinsGained + ' coins at ' + formatPrice(price) + ' each.';
+      }
+    }
+
+    function bindMarketTradeControls() {
+      var buttons = document.querySelectorAll('.market-trade-btn');
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var qty = btn.getAttribute('data-sell-qty');
+          sellSelectedCommodity(qty === 'all' ? 'all' : qty);
+        });
+      });
+    }
+
+    // Handler wired to the shared market engine. The engine updates prices once per
+    // minute and then calls window.onMarketUpdated; here we respond by re-rendering
+    // the selected commodity header and chart.
+    function handleMarketUpdatedForPage() {
+      renderSelectedCommodity();
+    }
+
+    function initMarketPage() {
+      updateTime();
+      setInterval(updateTime, 60000);
+      loadCornBalance();
+      loadCornCoins();
+      loadPlayerInventory();
+      totalHarvested = cornBalance;
+      updateCornBalanceDisplay();
+      updateCornWalletDisplay();
+      bindCornWallet();
+      bindCommodityTabs();
+      bindMarketTradeControls();
+      bindChartHover();
+      bindHoldingsRows();
+
+      if (typeof ensureMarketInitialized === 'function') {
+        window.onMarketUpdated = handleMarketUpdatedForPage;
+        ensureMarketInitialized();
+      } else {
+        renderSelectedCommodity();
+        updateTradeUI();
+      }
+
+      checkAndShowReadyToast();
+      setInterval(checkAndShowReadyToast, 1000);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMarketPage);
+    } else {
+      initMarketPage();
+    }
+  </script>
+</body>
+</html>

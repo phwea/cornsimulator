@@ -1,0 +1,1477 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wii-Style Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <div class="logo-orb"></div>
+        <span class="logo-text">MiiBoard</span>
+      </div>
+      <div class="toolbar-center">
+        <a href="index.html" class="toolbar-btn toolbar-btn-active">Home</a>
+        <a href="stats.html" class="toolbar-btn">Roller</a>
+        <a href="market.html" class="toolbar-btn">Market</a>
+      </div>
+      <div class="toolbar-right">
+        <div class="corn-wallet-wrapper">
+          <div class="corn-balance" id="corn-balance" aria-expanded="false">
+            🌽 <span class="corn-balance-value">0</span>
+          </div>
+          <div class="corn-wallet" id="corn-wallet" aria-hidden="true">
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Current corn</span>
+              <span class="corn-wallet-value corn-wallet-current">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Corn coins</span>
+              <span class="corn-wallet-value corn-wallet-coins">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Total harvested</span>
+              <span class="corn-wallet-value corn-wallet-total">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Best harvest</span>
+              <span class="corn-wallet-value corn-wallet-best">0</span>
+            </div>
+            <div class="corn-wallet-row">
+              <span class="corn-wallet-label">Last harvest</span>
+              <span class="corn-wallet-value corn-wallet-last">—</span>
+            </div>
+          </div>
+        </div>
+        <span class="toolbar-time" id="toolbar-time">--:--</span>
+        <div class="avatar"></div>
+      </div>
+    </header>
+    <main class="dashboard">
+      <section class="main-panel">
+        <div class="main-panel-inner farm-main-layout">
+          <div class="farm-content">
+            <div class="farm-fields-column">
+              <div class="farm-header farm-header-left">
+                <h1 class="main-panel-title">Corn Fields</h1>
+                <p class="main-panel-subtitle">Click a field to plant, wait for it to grow, then harvest to gain corn.</p>
+              </div>
+              <div class="fields-grid">
+            <button class="field" data-field-id="0">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 1</div>
+            </button>
+            <button class="field" data-field-id="1">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 2</div>
+            </button>
+            <button class="field" data-field-id="2">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 3</div>
+            </button>
+            <button class="field" data-field-id="3">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 4</div>
+            </button>
+            <button class="field" data-field-id="4">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 5</div>
+            </button>
+            <button class="field" data-field-id="5">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 6</div>
+            </button>
+            <button class="field" data-field-id="6">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 7</div>
+            </button>
+            <button class="field" data-field-id="7">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 8</div>
+            </button>
+            <button class="field" data-field-id="8">
+              <div class="field-land">
+                <div class="field-crops">
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                  <span class="field-corn">🌽</span>
+                </div>
+              </div>
+              <div class="field-progress">
+                <div class="field-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="field-status">Empty</div>
+              <div class="field-label">Field 9</div>
+            </button>
+          </div>
+              <div class="field-unlock-footnote" id="field-unlock-footnote"></div>
+            </div>
+            <section class="processing-section processing-section-side" aria-label="Processing buildings">
+              <h2 class="processing-title">Processing</h2>
+              <p class="processing-subtitle">Convert surplus corn into refined products.</p>
+              <div class="processing-grid">
+                <div class="processing-card" data-processor-key="mill">
+                  <div class="processing-card-main">
+                    <div class="processing-icon">⚙️</div>
+                    <div>
+                      <div class="processing-name">Mill</div>
+                      <div class="processing-io">4 corn → 1 Flour</div>
+                    </div>
+                  </div>
+                  <div class="processing-meta">
+                    <span class="processing-inventory-line">Inventory: <span id="processor-mill-inventory">0</span></span>
+                  </div>
+                  <div class="processing-controls" data-processor-key="mill">
+                    <button class="processing-amount-btn" type="button" data-processor-key="mill" data-amount-mode="custom">1</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="mill" data-amount-mode="5">5</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="mill" data-amount-mode="all">All</button>
+                    <button class="processing-collect-btn" type="button" data-processor-key="mill">Collect</button>
+                    <button class="processing-unlock-btn" type="button" data-processor-key="mill">Unlock</button>
+                  </div>
+                  <div class="processing-status" id="processor-mill-status">Idle · 4 corn · 1 Flour</div>
+                  <div class="processing-progress">
+                    <div class="processing-progress-bar" data-processor-key="mill"></div>
+                  </div>
+                  <div class="processing-confirm" data-processor-key="mill"></div>
+                </div>
+
+                <div class="processing-card" data-processor-key="press">
+                  <div class="processing-card-main">
+                    <div class="processing-icon">🛢️</div>
+                    <div>
+                      <div class="processing-name">Press</div>
+                      <div class="processing-io">10 corn → 1 Oil</div>
+                    </div>
+                  </div>
+                  <div class="processing-meta">
+                    <span class="processing-inventory-line">Inventory: <span id="processor-press-inventory">0</span></span>
+                  </div>
+                  <div class="processing-controls" data-processor-key="press">
+                    <button class="processing-amount-btn" type="button" data-processor-key="press" data-amount-mode="custom">1</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="press" data-amount-mode="5">5</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="press" data-amount-mode="all">All</button>
+                    <button class="processing-collect-btn" type="button" data-processor-key="press">Collect</button>
+                    <button class="processing-unlock-btn" type="button" data-processor-key="press">Unlock</button>
+                  </div>
+                  <div class="processing-status" id="processor-press-status">Idle · 10 corn · 1 Oil</div>
+                  <div class="processing-progress">
+                    <div class="processing-progress-bar" data-processor-key="press"></div>
+                  </div>
+                  <div class="processing-confirm" data-processor-key="press"></div>
+                </div>
+
+                <div class="processing-card" data-processor-key="refinery">
+                  <div class="processing-card-main">
+                    <div class="processing-icon">🔥</div>
+                    <div>
+                      <div class="processing-name">Refinery</div>
+                      <div class="processing-io">25 corn → 1 Biofuel</div>
+                    </div>
+                  </div>
+                  <div class="processing-meta">
+                    <span class="processing-inventory-line">Inventory: <span id="processor-refinery-inventory">0</span></span>
+                  </div>
+                  <div class="processing-controls" data-processor-key="refinery">
+                    <button class="processing-amount-btn" type="button" data-processor-key="refinery" data-amount-mode="custom">1</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="refinery" data-amount-mode="5">5</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="refinery" data-amount-mode="all">All</button>
+                    <button class="processing-collect-btn" type="button" data-processor-key="refinery">Collect</button>
+                    <button class="processing-unlock-btn" type="button" data-processor-key="refinery">Unlock</button>
+                  </div>
+                  <div class="processing-status" id="processor-refinery-status">Idle · 25 corn · 1 Biofuel</div>
+                  <div class="processing-progress">
+                    <div class="processing-progress-bar" data-processor-key="refinery"></div>
+                  </div>
+                  <div class="processing-confirm" data-processor-key="refinery"></div>
+                </div>
+
+                <div class="processing-card" data-processor-key="forge">
+                  <div class="processing-card-main">
+                    <div class="processing-icon">🪙</div>
+                    <div>
+                      <div class="processing-name">Corn Forge</div>
+                      <div class="processing-io">50 corn → 1 Ingot</div>
+                    </div>
+                  </div>
+                  <div class="processing-meta">
+                    <span class="processing-inventory-line">Inventory: <span id="processor-forge-inventory">0</span></span>
+                  </div>
+                  <div class="processing-controls" data-processor-key="forge">
+                    <button class="processing-amount-btn" type="button" data-processor-key="forge" data-amount-mode="custom">1</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="forge" data-amount-mode="5">5</button>
+                    <button class="processing-amount-btn" type="button" data-processor-key="forge" data-amount-mode="all">All</button>
+                    <button class="processing-collect-btn" type="button" data-processor-key="forge">Collect</button>
+                    <button class="processing-unlock-btn" type="button" data-processor-key="forge">Unlock</button>
+                  </div>
+                  <div class="processing-status" id="processor-forge-status">Idle · 50 corn · 1 Ingot</div>
+                  <div class="processing-progress">
+                    <div class="processing-progress-bar" data-processor-key="forge"></div>
+                  </div>
+                  <div class="processing-confirm" data-processor-key="forge"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="global-toast" id="ready-toast" aria-live="polite" aria-atomic="true"></div>
+  </div>
+  <script src="js/market.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    var cornBalance = 0;
+    var cornCoins = 0;
+    var fieldStates = [];
+    var CORN_PER_HARVEST = 12;
+    var BOUNTIFUL_MULTIPLIER = 2;
+    var BOUNTIFUL_CHANCE = 0.25;
+    var CORN_STORAGE_KEY = 'miiboard_corn_balance';
+    var CORN_LAST_SEEN_KEY = 'miiboard_last_seen';
+    var CORN_COINS_KEY = 'miiboard_corn_coins';
+    var FIELD_STORAGE_KEY = 'miiboard_field_states';
+    var FIELD_GROWTH_MS = 10000;
+    var FIELD_UNLOCK_KEY = 'miiboard_field_unlock_v1';
+    var fieldUnlockCount = 1;
+    var FIELD_UNLOCK_BASE_COST = 150;
+    var FIELD_UNLOCK_COST_STEP = 150;
+    var fieldTickIntervalId = null;
+    var readyToastHideTimerId = null;
+    var lastReadyToastCount = 0;
+    var totalHarvested = 0;
+    var bestHarvest = 0;
+    var lastHarvest = 0;
+    // Player processed-inventory persistence for flour, oil, biofuel, and ingots.
+    var PLAYER_INVENTORY_KEY = 'miiboard_player_inventory_v1';
+    var playerInventory = { flour: 0, oil: 0, biofuel: 0, ingot: 0 };
+    // Processing building configuration: corn cost per unit, output key, time per unit (seconds), and unlock cost in coins.
+    var PROCESSOR_STORAGE_KEY = 'miiboard_processor_states_v1';
+    var PROCESSOR_MAX_UNITS_PER_JOB = 25;
+    var processorStates = {};
+    var PROCESSORS = {
+      mill: { key: 'mill', name: 'Mill', displayUnit: 'Flour', icon: '⚙️', cornPerUnit: 4, outputKey: 'flour', secondsPerUnit: 3, unlockCostCoins: 0 },
+      press: { key: 'press', name: 'Press', displayUnit: 'Oil', icon: '🛢️', cornPerUnit: 10, outputKey: 'oil', secondsPerUnit: 6, unlockCostCoins: 75 },
+      refinery: { key: 'refinery', name: 'Refinery', displayUnit: 'Biofuel', icon: '🔥', cornPerUnit: 25, outputKey: 'biofuel', secondsPerUnit: 12, unlockCostCoins: 150 },
+      forge: { key: 'forge', name: 'Corn Forge', displayUnit: 'Ingot', icon: '🪙', cornPerUnit: 50, outputKey: 'ingot', secondsPerUnit: 20, unlockCostCoins: 300 }
+    };
+    // Per-processor custom batch size for the adjustable amount button (not persisted).
+    var processorCustomUnits = {};
+
+    function updateTime() {
+      var el = document.getElementById('toolbar-time');
+      if (!el) return;
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes().toString().padStart(2, '0');
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      if (hours === 0) hours = 12;
+      el.textContent = hours + ':' + minutes + ' ' + ampm;
+    }
+
+    function updateCornBalanceDisplay() {
+      var container = document.getElementById('corn-balance');
+      if (!container) return;
+      var valueEl = container.querySelector('.corn-balance-value');
+      if (valueEl) {
+        valueEl.textContent = cornBalance;
+      } else {
+        container.textContent = '🌽 ' + cornBalance;
+      }
+    }
+
+    function loadCornBalance() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_STORAGE_KEY);
+        if (stored !== null) {
+          var parsed = parseInt(stored, 10);
+          if (!isNaN(parsed) && parsed >= 0) {
+            cornBalance = parsed;
+          }
+        }
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function saveCornBalance() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(CORN_STORAGE_KEY, String(cornBalance));
+        localStorage.setItem(CORN_LAST_SEEN_KEY, String(Date.now()));
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function loadCornCoins() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_COINS_KEY);
+        if (stored !== null) {
+          var parsed = parseInt(stored, 10);
+          if (!isNaN(parsed) && parsed >= 0) {
+            cornCoins = parsed;
+          }
+        }
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function saveCornCoins() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(CORN_COINS_KEY, String(cornCoins));
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    // Load and save the player's processed commodity inventory (flour, oil, biofuel, ingots).
+    function loadPlayerInventory() {
+      try {
+        if (!window.localStorage) return;
+        var raw = localStorage.getItem(PLAYER_INVENTORY_KEY);
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        ['flour', 'oil', 'biofuel', 'ingot'].forEach(function (key) {
+          var value = parsed[key];
+          if (typeof value === 'number' && value >= 0) {
+            playerInventory[key] = Math.floor(value);
+          }
+        });
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function savePlayerInventory() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(PLAYER_INVENTORY_KEY, JSON.stringify(playerInventory));
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function getProcessorState(key) {
+      if (!processorStates[key]) {
+        var proc = PROCESSORS[key];
+        var unlockedByDefault = proc && proc.unlockCostCoins === 0;
+        processorStates[key] = {
+          key: key,
+          unlocked: unlockedByDefault,
+          state: 'idle',
+          startTime: null,
+          endTime: null,
+          units: 0
+        };
+      }
+      return processorStates[key];
+    }
+
+    function saveProcessorStates() {
+      try {
+        if (!window.localStorage) return;
+        var compact = {};
+        Object.keys(PROCESSORS).forEach(function (key) {
+          var state = processorStates[key];
+          if (!state) return;
+          compact[key] = {
+            state: state.state,
+            unlocked: state.unlocked === true,
+            startTime: typeof state.startTime === 'number' ? state.startTime : null,
+            endTime: typeof state.endTime === 'number' ? state.endTime : null,
+            units: typeof state.units === 'number' ? state.units : 0
+          };
+        });
+        localStorage.setItem(PROCESSOR_STORAGE_KEY, JSON.stringify(compact));
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function loadProcessorStates() {
+      try {
+        if (!window.localStorage) return;
+        var raw = localStorage.getItem(PROCESSOR_STORAGE_KEY);
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        Object.keys(PROCESSORS).forEach(function (key) {
+          var proc = PROCESSORS[key];
+          var data = parsed[key] || {};
+          var unlockedByDefault = proc && proc.unlockCostCoins === 0;
+          processorStates[key] = {
+            key: key,
+            unlocked: data.unlocked === true || unlockedByDefault,
+            state: (data.state === 'processing' || data.state === 'ready' || data.state === 'idle') ? data.state : 'idle',
+            startTime: typeof data.startTime === 'number' ? data.startTime : null,
+            endTime: typeof data.endTime === 'number' ? data.endTime : null,
+            units: typeof data.units === 'number' && data.units > 0 ? data.units : 0
+          };
+        });
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function formatProcessorCountdown(state, proc) {
+      if (!state || typeof state.endTime !== 'number') return '';
+      var remainingMs = state.endTime - Date.now();
+      if (!isFinite(remainingMs) || remainingMs < 0) remainingMs = 0;
+      var seconds = Math.ceil(remainingMs / 1000);
+      return seconds + 's';
+    }
+
+    // Format a job duration in seconds into a friendly string like "23s" or "2m 10s".
+    function formatProcessorDuration(totalSeconds) {
+      var s = Math.max(0, Math.round(totalSeconds));
+      if (s < 60) return s + 's';
+      var minutes = Math.floor(s / 60);
+      var seconds = s % 60;
+      if (seconds === 0) return minutes + 'm';
+      return minutes + 'm ' + seconds + 's';
+    }
+
+    function getProcessorCustomUnits(key) {
+      var value = processorCustomUnits[key];
+      if (typeof value !== 'number' || !isFinite(value) || value <= 0) {
+        return 1;
+      }
+      return Math.min(Math.floor(value), PROCESSOR_MAX_UNITS_PER_JOB);
+    }
+
+    // Refresh each processing card's status, unlock state, controls, inventory, and progress.
+    function updateProcessingUI() {
+      var now = Date.now();
+      Object.keys(PROCESSORS).forEach(function (key) {
+        var proc = PROCESSORS[key];
+        var card = document.querySelector('.processing-card[data-processor-key="' + key + '"]');
+        if (!card) return;
+        var statusEl = document.getElementById('processor-' + key + '-status');
+        var inventoryEl = document.getElementById('processor-' + key + '-inventory');
+        var amountBtns = card.querySelectorAll('.processing-amount-btn');
+        var collectBtn = card.querySelector('.processing-collect-btn');
+        var unlockBtn = card.querySelector('.processing-unlock-btn');
+        var confirmEl = card.querySelector('.processing-confirm');
+        var progressBar = card.querySelector('.processing-progress-bar');
+        var state = getProcessorState(key);
+        var amount = playerInventory[proc.outputKey] || 0;
+
+        if (inventoryEl) {
+          inventoryEl.textContent = amount;
+        }
+
+        // Keep the custom amount button's label in sync.
+        amountBtns.forEach(function (btn) {
+          var mode = btn.getAttribute('data-amount-mode');
+          if (mode === 'custom') {
+            btn.textContent = String(getProcessorCustomUnits(key));
+          }
+        });
+
+        card.classList.remove('processing-card-processing', 'processing-card-ready', 'processing-card-locked');
+
+        // Hide any stale confirmation UI when not idle.
+        if (confirmEl && state.state !== 'idle') {
+          confirmEl.style.display = 'none';
+          confirmEl.innerHTML = '';
+          confirmEl.removeAttribute('data-pending-units');
+        }
+
+        var unlocked = state.unlocked === true;
+        var statusText = '';
+
+        if (!unlocked) {
+          // Locked: must buy with coins to use this processor.
+          card.classList.add('processing-card-locked');
+          var cost = proc.unlockCostCoins || 0;
+          statusText = 'Locked';
+
+          amountBtns.forEach(function (btn) {
+            btn.disabled = true;
+          });
+          if (collectBtn) {
+            collectBtn.disabled = true;
+            collectBtn.style.display = 'none';
+          }
+          if (unlockBtn) {
+            unlockBtn.style.display = 'inline-flex';
+            unlockBtn.disabled = cornCoins < cost;
+            unlockBtn.textContent = cost > 0 ? ('Unlock (' + cost + ' coins)') : 'Unlock';
+          }
+          if (progressBar) {
+            progressBar.style.width = '0%';
+          }
+          if (statusEl) statusEl.textContent = statusText;
+          return;
+        }
+
+        // Unlocked: normal processing flow.
+        if (unlockBtn) {
+          unlockBtn.style.display = 'none';
+        }
+
+        amountBtns.forEach(function (btn) {
+          btn.disabled = state.state === 'processing' || state.state === 'ready';
+        });
+
+        if (collectBtn) {
+          collectBtn.style.display = state.state === 'ready' ? 'inline-flex' : 'none';
+        }
+
+        var progressPct = 0;
+
+        if (state.state === 'processing') {
+          var countdown = formatProcessorCountdown(state, proc);
+          var unitsProcessing = state.units || 0;
+          var unitLabel = proc.displayUnit + (unitsProcessing === 1 ? '' : 's');
+          statusText = 'Processing ' + unitsProcessing + ' ' + unitLabel + ' (' + countdown + ')';
+          card.classList.add('processing-card-processing');
+
+          if (typeof state.startTime === 'number' && typeof state.endTime === 'number' && state.endTime > state.startTime) {
+            var totalMs = state.endTime - state.startTime;
+            var elapsedMs = now - state.startTime;
+            progressPct = Math.max(0, Math.min(100, (elapsedMs / totalMs) * 100));
+          }
+        } else if (state.state === 'ready') {
+          var unitsReady = state.units || 0;
+          if (unitsReady <= 0) unitsReady = 1;
+          var readyLabel = proc.displayUnit + (unitsReady === 1 ? '' : 's');
+          statusText = 'Ready to collect ' + unitsReady + ' ' + readyLabel;
+          card.classList.add('processing-card-ready');
+          progressPct = 100;
+        } else {
+          // Idle
+          var maxUnitsByCorn = Math.floor(cornBalance / proc.cornPerUnit);
+          if (maxUnitsByCorn <= 0) {
+            statusText = 'Idle · Need ' + proc.cornPerUnit + ' corn (have ' + cornBalance + ').';
+          } else {
+            statusText = 'Idle · 1 unit costs ' + proc.cornPerUnit + ' corn.';
+          }
+          progressPct = 0;
+        }
+
+        if (progressBar) {
+          progressBar.style.width = progressPct + '%';
+        }
+
+        if (statusEl) {
+          statusEl.textContent = statusText;
+        }
+      });
+    }
+
+    // Show an inline confirmation panel for a given number of units on a processor card.
+    function confirmAndStartProcessorJob(key, units) {
+      var proc = PROCESSORS[key];
+      if (!proc || !units || units <= 0) return;
+      var state = getProcessorState(key);
+      if (state.unlocked !== true) return;
+      if (state.state === 'processing') return;
+
+      var card = document.querySelector('.processing-card[data-processor-key="' + key + '"]');
+      if (!card) return;
+      var statusEl = document.getElementById('processor-' + key + '-status');
+      var confirmEl = card.querySelector('.processing-confirm');
+      if (!confirmEl) return;
+
+      var maxUnitsByCorn = Math.floor(cornBalance / proc.cornPerUnit);
+      var clampedUnits = Math.min(units, maxUnitsByCorn, PROCESSOR_MAX_UNITS_PER_JOB);
+      if (!clampedUnits || clampedUnits <= 0) {
+        if (statusEl) {
+          statusEl.textContent = 'Idle · Need ' + proc.cornPerUnit + ' corn (have ' + cornBalance + ').';
+        }
+        confirmEl.style.display = 'none';
+        confirmEl.innerHTML = '';
+        confirmEl.removeAttribute('data-pending-units');
+        return;
+      }
+
+      var cornCost = clampedUnits * proc.cornPerUnit;
+      var totalSeconds = clampedUnits * (proc.secondsPerUnit || 1);
+      var unitLabel = proc.displayUnit + (clampedUnits === 1 ? '' : 's');
+
+      // Update status with a concise preview line.
+      if (statusEl) {
+        statusEl.textContent = 'Next batch: ' + clampedUnits + ' ' + unitLabel + ' · ' + cornCost + ' corn · ' + formatProcessorDuration(totalSeconds);
+      }
+
+      // Build inline confirmation UI.
+      confirmEl.innerHTML = '';
+      var textDiv = document.createElement('div');
+      textDiv.className = 'processing-confirm-text';
+      textDiv.textContent = 'Process ' + cornCost + ' corn into ' + clampedUnits + ' ' + unitLabel +
+        '? This process will take ' + formatProcessorDuration(totalSeconds) + '.';
+
+      var actionsDiv = document.createElement('div');
+      actionsDiv.className = 'processing-confirm-actions';
+
+      var cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
+      cancelBtn.className = 'processing-confirm-btn processing-confirm-cancel';
+      cancelBtn.textContent = 'Cancel';
+
+      var okBtn = document.createElement('button');
+      okBtn.type = 'button';
+      okBtn.className = 'processing-confirm-btn processing-confirm-ok';
+      okBtn.textContent = 'Confirm';
+
+      actionsDiv.appendChild(cancelBtn);
+      actionsDiv.appendChild(okBtn);
+
+      confirmEl.appendChild(textDiv);
+      confirmEl.appendChild(actionsDiv);
+      confirmEl.style.display = 'flex';
+      confirmEl.setAttribute('data-pending-units', String(clampedUnits));
+    }
+
+    // Handle clicks on the amount buttons (custom/5/all) to configure and start jobs.
+    function handleProcessorAmountClick(key, mode) {
+      var proc = PROCESSORS[key];
+      if (!proc) return;
+      var state = getProcessorState(key);
+      if (state.unlocked !== true) return;
+      if (state.state === 'processing' || state.state === 'ready') return;
+
+      if (mode === 'all') {
+        var maxUnitsByCorn = Math.floor(cornBalance / proc.cornPerUnit);
+        var unitsAll = Math.min(maxUnitsByCorn, PROCESSOR_MAX_UNITS_PER_JOB);
+        confirmAndStartProcessorJob(key, unitsAll);
+        return;
+      }
+
+      if (mode === '5') {
+        confirmAndStartProcessorJob(key, 5);
+        return;
+      }
+
+      // Custom amount: prompt the player for a batch size.
+      var current = getProcessorCustomUnits(key);
+      var input = window.prompt('How many units to process at once? (max ' + PROCESSOR_MAX_UNITS_PER_JOB + ')', String(current));
+      if (input === null) return;
+      var parsed = parseInt(input, 10);
+      if (isNaN(parsed) || parsed <= 0) return;
+      var clamped = Math.max(1, Math.min(parsed, PROCESSOR_MAX_UNITS_PER_JOB));
+      processorCustomUnits[key] = clamped;
+      confirmAndStartProcessorJob(key, clamped);
+    }
+
+    // Handle collecting finished output when a job is ready.
+    function handleProcessorCollectClick(key) {
+      var proc = PROCESSORS[key];
+      if (!proc) return;
+      var state = getProcessorState(key);
+      if (state.unlocked !== true) return;
+      if (state.state !== 'ready') return;
+
+      var unitsReady = state.units || 0;
+      if (unitsReady <= 0) unitsReady = 1;
+      var unitLabel = proc.displayUnit + (unitsReady === 1 ? '' : 's');
+      var statusEl = document.getElementById('processor-' + key + '-status');
+
+      playerInventory[proc.outputKey] = (playerInventory[proc.outputKey] || 0) + unitsReady;
+      savePlayerInventory();
+      updateCornWalletDisplay();
+
+      if (statusEl) {
+        statusEl.textContent = 'Collected ' + unitsReady + ' ' + unitLabel + '!';
+      }
+
+      state.state = 'idle';
+      state.startTime = null;
+      state.endTime = null;
+      state.units = 0;
+      saveProcessorStates();
+      updateProcessingUI();
+    }
+
+    // Handle unlocking a processor with coins so it can be used.
+    function handleProcessorUnlockClick(key) {
+      var proc = PROCESSORS[key];
+      if (!proc) return;
+      var state = getProcessorState(key);
+      if (state.unlocked === true) return;
+
+      var cost = proc.unlockCostCoins || 0;
+      if (cost <= 0) {
+        state.unlocked = true;
+        saveProcessorStates();
+        updateProcessingUI();
+        return;
+      }
+
+      if (cornCoins < cost) {
+        var statusEl = document.getElementById('processor-' + key + '-status');
+        if (statusEl) {
+          statusEl.textContent = 'Need ' + cost + ' coins to unlock (have ' + cornCoins + ').';
+        }
+        return;
+      }
+
+      var ok = window.confirm('Unlock ' + proc.name + ' for ' + cost + ' coins?');
+      if (!ok) return;
+
+      cornCoins -= cost;
+      if (cornCoins < 0) cornCoins = 0;
+      saveCornCoins();
+      updateCornWalletDisplay();
+
+      state.unlocked = true;
+      saveProcessorStates();
+      updateProcessingUI();
+    }
+
+    // Attach click handlers for each processing building card and draw initial status.
+    function bindProcessingBuildings() {
+      Object.keys(PROCESSORS).forEach(function (key) {
+        var card = document.querySelector('.processing-card[data-processor-key="' + key + '"]');
+        if (!card) return;
+
+        var amountBtns = card.querySelectorAll('.processing-amount-btn');
+        amountBtns.forEach(function (btn) {
+          var mode = btn.getAttribute('data-amount-mode');
+          btn.addEventListener('click', function (event) {
+            event.stopPropagation();
+            handleProcessorAmountClick(key, mode);
+          });
+        });
+
+        var collectBtn = card.querySelector('.processing-collect-btn');
+        if (collectBtn) {
+          collectBtn.addEventListener('click', function (event) {
+            event.stopPropagation();
+            handleProcessorCollectClick(key);
+          });
+        }
+
+        var unlockBtn = card.querySelector('.processing-unlock-btn');
+        if (unlockBtn) {
+          unlockBtn.addEventListener('click', function (event) {
+            event.stopPropagation();
+            handleProcessorUnlockClick(key);
+          });
+        }
+
+        // Delegate clicks from inline confirmation buttons.
+        card.addEventListener('click', function (event) {
+          var target = event.target;
+          if (!target) return;
+          if (target.classList.contains('processing-confirm-ok')) {
+            event.stopPropagation();
+            var confirmEl = card.querySelector('.processing-confirm');
+            var proc = PROCESSORS[key];
+            var state = getProcessorState(key);
+            if (!confirmEl || !proc || state.unlocked !== true || state.state === 'processing') return;
+            var pendingStr = confirmEl.getAttribute('data-pending-units');
+            var pending = pendingStr ? parseInt(pendingStr, 10) : 0;
+            if (!pending || pending <= 0) return;
+
+            var statusEl = document.getElementById('processor-' + key + '-status');
+            var maxUnitsByCorn = Math.floor(cornBalance / proc.cornPerUnit);
+            var clampedUnits = Math.min(pending, maxUnitsByCorn, PROCESSOR_MAX_UNITS_PER_JOB);
+            if (!clampedUnits || clampedUnits <= 0) {
+              if (statusEl) {
+                statusEl.textContent = 'Idle · Need ' + proc.cornPerUnit + ' corn (have ' + cornBalance + ').';
+              }
+              confirmEl.style.display = 'none';
+              confirmEl.innerHTML = '';
+              confirmEl.removeAttribute('data-pending-units');
+              return;
+            }
+
+            var cornCost = clampedUnits * proc.cornPerUnit;
+            cornBalance -= cornCost;
+            if (cornBalance < 0) cornBalance = 0;
+            saveCornBalance();
+            updateCornBalanceDisplay();
+            updateCornWalletDisplay();
+
+            var now = Date.now();
+            var perUnitMs = (proc.secondsPerUnit || 1) * 1000;
+            var durationMs = perUnitMs * clampedUnits;
+            state.state = 'processing';
+            state.startTime = now;
+            state.endTime = now + durationMs;
+            state.units = clampedUnits;
+            saveProcessorStates();
+
+            confirmEl.style.display = 'none';
+            confirmEl.innerHTML = '';
+            confirmEl.removeAttribute('data-pending-units');
+            updateProcessingUI();
+          } else if (target.classList.contains('processing-confirm-cancel')) {
+            event.stopPropagation();
+            var confirmNode = card.querySelector('.processing-confirm');
+            if (confirmNode) {
+              confirmNode.style.display = 'none';
+              confirmNode.innerHTML = '';
+              confirmNode.removeAttribute('data-pending-units');
+            }
+          }
+        });
+      });
+      updateProcessingUI();
+    }
+
+    function updateProcessingFromTime() {
+      var now = Date.now();
+      var changed = false;
+      Object.keys(PROCESSORS).forEach(function (key) {
+        var proc = PROCESSORS[key];
+        var state = getProcessorState(key);
+        if (state.state === 'processing') {
+          var endTime = typeof state.endTime === 'number' ? state.endTime : null;
+          if (!endTime && typeof state.startTime === 'number') {
+            var perUnitMs = (proc.secondsPerUnit || 1) * 1000;
+            var units = state.units && state.units > 0 ? state.units : 1;
+            endTime = state.startTime + perUnitMs * units;
+            state.endTime = endTime;
+            changed = true;
+          }
+          if (endTime && now >= endTime) {
+            state.state = 'ready';
+            state.startTime = null;
+            changed = true;
+          }
+        }
+      });
+      if (changed) {
+        saveProcessorStates();
+      }
+      updateProcessingUI();
+    }
+
+    function initProcessorStates() {
+      loadProcessorStates();
+      updateProcessingFromTime();
+    }
+
+    function updateCornWalletDisplay() {
+      var wallet = document.getElementById('corn-wallet');
+      if (!wallet) return;
+      var currentEl = wallet.querySelector('.corn-wallet-current');
+      var totalEl = wallet.querySelector('.corn-wallet-total');
+      var bestEl = wallet.querySelector('.corn-wallet-best');
+      var lastEl = wallet.querySelector('.corn-wallet-last');
+      var coinsEl = wallet.querySelector('.corn-wallet-coins');
+      if (currentEl) currentEl.textContent = cornBalance;
+      if (totalEl) totalEl.textContent = totalHarvested;
+      if (bestEl) bestEl.textContent = bestHarvest;
+      if (lastEl) lastEl.textContent = lastHarvest > 0 ? lastHarvest : '—';
+      if (coinsEl) coinsEl.textContent = cornCoins;
+    }
+
+    function applyOfflineBonus() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(CORN_LAST_SEEN_KEY);
+        if (!stored) {
+          localStorage.setItem(CORN_LAST_SEEN_KEY, String(Date.now()));
+          return;
+        }
+        var previous = parseInt(stored, 10);
+        if (isNaN(previous)) {
+          localStorage.setItem(CORN_LAST_SEEN_KEY, String(Date.now()));
+          return;
+        }
+        var now = Date.now();
+        var diffMinutes = Math.floor((now - previous) / 60000);
+        var bonus = Math.min(Math.floor(diffMinutes / 5), 20);
+        if (bonus > 0) {
+          cornBalance += bonus;
+          totalHarvested += bonus;
+          lastHarvest = bonus;
+          updateCornBalanceDisplay();
+          updateCornWalletDisplay();
+          saveCornBalance();
+          return;
+        }
+        localStorage.setItem(CORN_LAST_SEEN_KEY, String(now));
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function bindCornWallet() {
+      var balance = document.getElementById('corn-balance');
+      var wallet = document.getElementById('corn-wallet');
+      if (!balance || !wallet) return;
+      var isOpen = false;
+
+      function setOpen(open) {
+        isOpen = open;
+        if (open) {
+          wallet.classList.add('is-open');
+          balance.setAttribute('aria-expanded', 'true');
+          wallet.setAttribute('aria-hidden', 'false');
+        } else {
+          wallet.classList.remove('is-open');
+          balance.setAttribute('aria-expanded', 'false');
+          wallet.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      balance.setAttribute('role', 'button');
+      balance.setAttribute('tabindex', '0');
+
+      balance.addEventListener('click', function (event) {
+        event.stopPropagation();
+        setOpen(!isOpen);
+      });
+
+      balance.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setOpen(!isOpen);
+        }
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!isOpen) return;
+        if (!wallet.contains(event.target) && !balance.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+    }
+
+    function isFieldUnlocked(index) {
+      return typeof index === 'number' && index < fieldUnlockCount;
+    }
+
+    function getFieldUnlockCost(index) {
+      var fieldNumber = (typeof index === 'number' ? index : 0) + 1;
+      if (fieldNumber <= 1) return 0;
+      // Field 2 = 150, Field 3 = 300, etc.
+      return (fieldNumber - 1) * FIELD_UNLOCK_BASE_COST;
+    }
+
+    function getNextFieldUnlockCost() {
+      return getFieldUnlockCost(fieldUnlockCount);
+    }
+
+    function saveFieldUnlockCount() {
+      try {
+        if (!window.localStorage) return;
+        localStorage.setItem(FIELD_UNLOCK_KEY, String(fieldUnlockCount));
+      } catch (e) {
+      }
+    }
+
+    function loadFieldUnlockCount() {
+      try {
+        if (!window.localStorage) return;
+        var stored = localStorage.getItem(FIELD_UNLOCK_KEY);
+        if (stored !== null) {
+          var parsed = parseInt(stored, 10);
+          if (!isNaN(parsed) && parsed > 0) {
+            fieldUnlockCount = Math.min(parsed, 9);
+            return;
+          }
+        }
+      } catch (e) {
+      }
+      fieldUnlockCount = 1;
+    }
+
+    function createFieldState(element, index) {
+      var isSpecial = element.classList.contains('field-special');
+      return {
+        el: element,
+        index: typeof index === 'number' ? index : 0,
+        progress: 0,
+        state: 'empty',
+        startTime: null,
+        growMs: isSpecial ? FIELD_GROWTH_MS * 4 : FIELD_GROWTH_MS,
+        perHarvest: isSpecial ? CORN_PER_HARVEST * 3 : CORN_PER_HARVEST,
+        bountifulChance: isSpecial ? BOUNTIFUL_CHANCE * 2 : BOUNTIFUL_CHANCE
+      };
+    }
+
+    function saveFieldStates() {
+      try {
+        if (!window.localStorage) return;
+        var compact = fieldStates.map(function (field) {
+          return {
+            state: field.state,
+            progress: field.progress,
+            startTime: field.startTime
+          };
+        });
+        localStorage.setItem(FIELD_STORAGE_KEY, JSON.stringify(compact));
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+
+    function loadStoredFieldStates() {
+      try {
+        if (!window.localStorage) return null;
+        var raw = localStorage.getItem(FIELD_STORAGE_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return null;
+        return parsed;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function applyStoredFieldStates() {
+      var stored = loadStoredFieldStates();
+      if (!stored || !fieldStates || !fieldStates.length) return;
+      var now = Date.now();
+      fieldStates.forEach(function (field, index) {
+        var data = stored[index];
+        if (!data) return;
+        field.state = data.state || 'empty';
+        field.startTime = typeof data.startTime === 'number' ? data.startTime : null;
+
+        var progress = typeof data.progress === 'number' ? data.progress : 0;
+
+        if (field.state === 'growing') {
+          var growMs = field.growMs || FIELD_GROWTH_MS;
+          // Backfill missing startTime for older saves using stored progress
+          if (typeof field.startTime !== 'number') {
+            if (progress > 0 && progress < 100) {
+              field.startTime = now - (progress / 100) * growMs;
+            } else {
+              field.startTime = now;
+            }
+          }
+
+          var elapsed = now - field.startTime;
+          var pct = (elapsed / growMs) * 100;
+          if (pct >= 100) {
+            pct = 100;
+            field.state = 'ready';
+            field.startTime = null;
+          }
+          progress = pct;
+        }
+
+        field.progress = Math.max(0, Math.min(100, progress));
+        updateFieldUI(field);
+      });
+      updateReadyToastFromFields();
+    }
+
+    function formatFieldCountdown(field) {
+      var growMs = field.growMs || FIELD_GROWTH_MS;
+      var remainingMs;
+      if (field.startTime) {
+        remainingMs = growMs - (Date.now() - field.startTime);
+      } else {
+        var pct = typeof field.progress === 'number' ? field.progress : 0;
+        remainingMs = growMs - (pct / 100) * growMs;
+      }
+      if (!isFinite(remainingMs)) remainingMs = 0;
+      if (remainingMs < 0) remainingMs = 0;
+      var seconds = Math.floor(remainingMs / 1000);
+      var hundredths = Math.floor((remainingMs % 1000) / 10);
+      return seconds + '.' + String(hundredths).padStart(2, '0') + 's';
+    }
+
+    function updateFieldUI(field) {
+      var bar = field.el.querySelector('.field-progress-bar');
+      var status = field.el.querySelector('.field-status');
+      if (bar) {
+        bar.style.width = field.progress + '%';
+      }
+      if (status) {
+        if (field.state === 'empty') {
+          status.textContent = 'Empty';
+        } else if (field.state === 'growing') {
+          status.textContent = formatFieldCountdown(field);
+        } else if (field.state === 'ready') {
+          status.textContent = 'Tap to harvest!';
+        }
+      }
+      field.el.classList.remove('field-empty', 'field-growing', 'field-ready', 'field-locked');
+      if (!isFieldUnlocked(field.index)) {
+        field.el.classList.add('field-locked');
+        if (status) {
+          var cost = getFieldUnlockCost(field.index);
+          if (cost > 0) {
+            status.textContent = 'Locked · ' + cost + ' coins';
+          } else {
+            status.textContent = 'Locked';
+          }
+        }
+        if (bar) {
+          bar.style.width = '0%';
+        }
+      } else {
+        field.el.classList.add('field-' + field.state);
+      }
+
+      var corns = field.el.querySelectorAll('.field-corn');
+      corns.forEach(function (corn) {
+        if (!isFieldUnlocked(field.index)) {
+          corn.textContent = '';
+        } else if (field.state === 'growing') {
+          corn.textContent = '🌱';
+        } else {
+          corn.textContent = '🌽';
+        }
+      });
+    }
+
+    function getReadyFieldCount() {
+      var count = 0;
+      fieldStates.forEach(function (field) {
+        if (field.state === 'ready') {
+          count++;
+        }
+      });
+      return count;
+    }
+
+    function showReadyToast(count) {
+      var toast = document.getElementById('ready-toast');
+      if (!toast) return;
+      var label = count === 1 ? '1 field is ready to harvest' : count + ' fields are ready to harvest';
+      toast.textContent = '🌽 ' + label;
+      toast.classList.add('is-visible');
+      if (readyToastHideTimerId !== null) {
+        clearTimeout(readyToastHideTimerId);
+      }
+      readyToastHideTimerId = setTimeout(function () {
+        toast.classList.remove('is-visible');
+      }, 3500);
+    }
+
+    function updateReadyToastFromFields() {
+      var count = getReadyFieldCount();
+      if (count > 0 && count !== lastReadyToastCount) {
+        lastReadyToastCount = count;
+        showReadyToast(count);
+      }
+    }
+
+    function updateGrowingFieldsFromTime() {
+      var now = Date.now();
+      var changed = false;
+      fieldStates.forEach(function (field) {
+        if (field.state === 'growing' && field.startTime) {
+          var growMs = field.growMs || FIELD_GROWTH_MS;
+          var pct = (now - field.startTime) / growMs * 100;
+          if (pct >= 100) {
+            pct = 100;
+            field.state = 'ready';
+            field.startTime = null;
+          }
+          var clamped = Math.max(0, Math.min(100, pct));
+          if (clamped !== field.progress) {
+            field.progress = clamped;
+            changed = true;
+          }
+          updateFieldUI(field);
+        }
+      });
+      if (changed) {
+        saveFieldStates();
+      }
+      updateReadyToastFromFields();
+      updateProcessingFromTime();
+    }
+
+    function startFieldTickLoop() {
+      if (fieldTickIntervalId !== null) {
+        clearInterval(fieldTickIntervalId);
+      }
+      fieldTickIntervalId = setInterval(updateGrowingFieldsFromTime, 500);
+    }
+
+    function startGrowing(field) {
+      if (!isFieldUnlocked(field.index)) return;
+      if (field.state !== 'empty') return;
+      field.state = 'growing';
+      field.progress = 0;
+      field.startTime = Date.now();
+      updateFieldUI(field);
+      saveFieldStates();
+    }
+
+    function harvest(field) {
+      if (!isFieldUnlocked(field.index)) return;
+      if (field.state !== 'ready') return;
+      var baseAmount = field.perHarvest || CORN_PER_HARVEST;
+      var chance = field.bountifulChance || BOUNTIFUL_CHANCE;
+      var amount = baseAmount;
+      var isBountiful = Math.random() < chance;
+      if (isBountiful) {
+        amount = amount * BOUNTIFUL_MULTIPLIER;
+      }
+      cornBalance += amount;
+      updateCornBalanceDisplay();
+      saveCornBalance();
+      totalHarvested += amount;
+      lastHarvest = amount;
+      if (amount > bestHarvest) {
+        bestHarvest = amount;
+      }
+      updateCornWalletDisplay();
+      var status = field.el.querySelector('.field-status');
+      var chip = null;
+      try {
+        chip = document.createElement('div');
+        chip.className = 'field-reward-chip';
+        chip.textContent = '+' + amount;
+        field.el.appendChild(chip);
+      } catch (e) {
+        chip = null;
+      }
+      field.state = 'empty';
+      field.progress = 0;
+      field.startTime = null;
+      updateFieldUI(field);
+      saveFieldStates();
+      if (status) {
+        status.textContent = isBountiful ? 'Bountiful harvest! +' + amount : 'Harvested +' + amount;
+      }
+      if (isBountiful) {
+        field.el.classList.add('field-bountiful');
+      }
+      setTimeout(function () {
+        field.el.classList.remove('field-bountiful');
+        if (chip && chip.parentNode) {
+          chip.parentNode.removeChild(chip);
+        }
+        updateFieldUI(field);
+      }, 900);
+    }
+
+    function showFieldCostChip(field, text) {
+      if (!field || !field.el) return;
+      var chip = null;
+      try {
+        chip = document.createElement('div');
+        chip.className = 'field-cost-chip';
+        chip.textContent = text;
+        field.el.appendChild(chip);
+      } catch (e) {
+        chip = null;
+      }
+      setTimeout(function () {
+        if (chip && chip.parentNode) {
+          chip.parentNode.removeChild(chip);
+        }
+      }, 900);
+    }
+
+    function updateFieldUnlockFootnote() {
+      var el = document.getElementById('field-unlock-footnote');
+      if (!el) return;
+      var nextIndex = fieldUnlockCount;
+      if (nextIndex >= 9) {
+        el.textContent = 'All fields unlocked.';
+        return;
+      }
+      var cost = getNextFieldUnlockCost();
+      el.textContent = 'Tap a locked field to buy it for ' + cost + ' coins.';
+    }
+
+    function tryUnlockField(field) {
+      if (isFieldUnlocked(field.index)) return;
+
+      // Enforce sequential unlocking: you must buy the next field in order.
+      if (field.index !== fieldUnlockCount) {
+        showFieldCostChip(field, 'Unlock Field ' + (fieldUnlockCount + 1) + ' first');
+        return;
+      }
+
+      var cost = getFieldUnlockCost(field.index);
+      if (cornCoins < cost) {
+        showFieldCostChip(field, 'Costs ' + cost + ' coins');
+        return;
+      }
+
+      cornCoins -= cost;
+      saveCornCoins();
+      updateCornWalletDisplay();
+      fieldUnlockCount = field.index + 1;
+      saveFieldUnlockCount();
+      updateFieldUnlockFootnote();
+      updateFieldUI(field);
+      showFieldCostChip(field, '-' + cost + ' coins');
+    }
+
+    function bindFieldEvents() {
+      var nodes = document.querySelectorAll('.field');
+      fieldStates = [];
+      nodes.forEach(function (node, index) {
+        var field = createFieldState(node, index);
+        fieldStates.push(field);
+        node.setAttribute('type', 'button');
+        node.setAttribute('tabindex', '0');
+        node.addEventListener('click', function () {
+          if (!isFieldUnlocked(field.index)) {
+            tryUnlockField(field);
+          } else if (field.state === 'empty') {
+            startGrowing(field);
+          } else if (field.state === 'ready') {
+            harvest(field);
+          }
+        });
+        node.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            node.click();
+          }
+        });
+        updateFieldUI(field);
+      });
+      applyStoredFieldStates();
+      updateFieldUnlockFootnote();
+    }
+
+    function initDashboard() {
+      updateTime();
+      setInterval(updateTime, 60000);
+      loadCornBalance();
+      totalHarvested = cornBalance;
+      applyOfflineBonus();
+      updateCornBalanceDisplay();
+      loadCornCoins();
+      loadFieldUnlockCount();
+      loadPlayerInventory();
+      updateCornWalletDisplay();
+      bindFieldEvents();
+      initProcessorStates();
+      startFieldTickLoop();
+      bindProcessingBuildings();
+      bindCornWallet();
+      if (typeof ensureMarketInitialized === 'function') {
+        ensureMarketInitialized();
+      }
+    }
+
+    // Ensure latest field state is persisted when leaving the page
+    window.addEventListener('beforeunload', function () {
+      saveFieldStates();
+      saveProcessorStates();
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDashboard);
+    } else {
+      initDashboard();
+    }
+  </script>
+</body>
+</html>
